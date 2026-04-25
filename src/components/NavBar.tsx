@@ -35,6 +35,9 @@ export function NavBar() {
         <Link href="/directory"><TextButton>Directory</TextButton></Link>
         <Link href="/marketplace"><TextButton>Marketplace</TextButton></Link>
         <Link href="/studio"><TextButton>Badge Studio</TextButton></Link>
+        {session && (session.user as any).role === "ADMIN" && (
+          <Link href="/admin"><TextButton style={{ color: "var(--md-sys-color-tertiary)" }}>Admin</TextButton></Link>
+        )}
         
         {mounted && (
           <IconButton onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
@@ -86,6 +89,11 @@ export function NavBar() {
             <Link href="/studio" className={styles.drawerLink}>
               <Icon>auto_awesome</Icon> Badge Studio
             </Link>
+            {session && (session.user as any).role === "ADMIN" && (
+              <Link href="/admin" className={styles.drawerLink}>
+                <Icon>admin_panel_settings</Icon> Admin Panel
+              </Link>
+            )}
             <hr className={styles.divider} />
             {session ? (
               <>

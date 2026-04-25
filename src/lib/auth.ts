@@ -52,15 +52,17 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.alias = (user as any).alias;
+        token.role = (user as any).role;
         token.email = user.email;
         token.name = user.name;
       } else if (token.id) {
-        // Refresh alias from DB occasionally
+        // Refresh alias and role from DB occasionally
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { name: true, alias: true }
+          select: { name: true, alias: true, role: true }
         });
         if (dbUser) {
+          token.role = dbUser.role;
           if (!dbUser.alias && dbUser.name) {
             const newAlias = await generateUniqueAlias(dbUser.name);
             await prisma.user.update({
@@ -80,6 +82,7 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.alias = token.alias as string;
+        session.user.role = token.role as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         // Ensure image is NOT in the session cookie if it's large

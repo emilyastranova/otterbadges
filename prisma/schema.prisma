@@ -18,6 +18,7 @@ model User {
   pronouns   String?
   teamRole   String?
   themeColor String?     @default("#6750A4") // Default Material 3 Primary Color
+  role       String      @default("USER")
   badges     UserBadge[]
   createdBadges Badge[]  @relation("CreatedBadges")
   createdAt  DateTime    @default(now())

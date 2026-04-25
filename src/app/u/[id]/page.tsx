@@ -6,7 +6,7 @@ import styles from "./profile.module.css";
 import UserThemeContainer from "./UserThemeContainer";
 import { Icon } from "@/components/MaterialUI";
 import AssignBadgeButton from "./AssignBadgeButton";
-import ThemeCustomizer from "./ThemeCustomizer";
+import ProfileHeader from "./ProfileHeader";
 
 export default async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -38,23 +38,7 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
   return (
     <UserThemeContainer sourceColor={user.themeColor || "#6750A4"}>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.avatar}>
-            {user.image ? (
-              <img src={user.image} alt={user.name || "User"} />
-            ) : (
-              <Icon style={{ fontSize: "64px" }}>person</Icon>
-            )}
-          </div>
-          <div className={styles.info}>
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              <h1>{user.name || "Unknown User"}</h1>
-              {isOwnProfile && <ThemeCustomizer initialColor={user.themeColor || "#6750A4"} />}
-            </div>
-            {user.pronouns && <p className={styles.pronouns}>{user.pronouns}</p>}
-            {user.teamRole && <p className={styles.role}>{user.teamRole}</p>}
-          </div>
-        </div>
+        <ProfileHeader user={user} isOwnProfile={isOwnProfile} />
 
         {session?.user && !isOwnProfile && ownedBadges.length > 0 && (
           <div style={{ marginBottom: "2rem" }}>

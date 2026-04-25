@@ -11,6 +11,8 @@ model User {
   name       String?
   email      String?     @unique
   password   String?
+  namePronunciation String?
+  bio               String?
   image      String?
   pronouns   String?
   teamRole   String?

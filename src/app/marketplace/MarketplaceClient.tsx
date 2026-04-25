@@ -4,12 +4,28 @@ import { useState } from "react";
 import { Icon, OutlinedTextField, FilledButton, OutlinedButton } from "@/components/MaterialUI";
 import styles from "./marketplace.module.css";
 import { useSession } from "next-auth/react";
+import FeedbackDialog from "@/components/FeedbackDialog";
 
 export default function MarketplaceClient({ initialBadges }: { initialBadges: any[] }) {
   const [badges, setBadges] = useState(initialBadges);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    type: "alert" | "confirm" | "error" | "success";
+  }>({
+    open: false,
+    title: "",
+    message: "",
+    type: "alert",
+  });
+
+  const showAlert = (title: string, message: string, type: "alert" | "success" | "error" = "alert") => {
+    setDialog({ open: true, title, message, type });
+  };
 
   const handleSearch = async (q: string) => {
     setSearch(q);
@@ -22,7 +38,7 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
 
   const handleCollect = async (badgeId: string) => {
     if (!session) {
-      alert("Please sign in to collect badges!");
+      showAlert("Sign In Required", "Please sign in to collect badges!", "error");
       return;
     }
     
@@ -34,11 +50,11 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
     });
 
     if (res.ok) {
-      alert("Badge added to your profile!");
+      showAlert("Success!", "Badge added to your profile!", "success");
       handleSearch(search); // Refresh list to show 'Collected'
     } else {
       const data = await res.json();
-      alert(data.error || "Failed to collect badge");
+      showAlert("Collection Failed", data.error || "Failed to collect badge", "error");
     }
     setLoading(false);
   };
@@ -93,6 +109,14 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
           </div>
         )}
       </div>
+
+      <FeedbackDialog
+        open={dialog.open}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+        onConfirm={() => setDialog(prev => ({ ...prev, open: false }))}
+      />
     </div>
   );
 }

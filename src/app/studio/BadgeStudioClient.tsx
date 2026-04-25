@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FilledButton, OutlinedTextField, Icon, TextButton, Checkbox } from "@/components/MaterialUI";
 import { Badge } from "@prisma/client";
 import styles from "./studio.module.css";
+import FeedbackDialog from "@/components/FeedbackDialog";
 
 import UserSelectorDialog from "./UserSelectorDialog";
 import BadgeRecipientManager from "./BadgeRecipientManager";
@@ -24,6 +25,20 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [editIsPublic, setEditIsPublic] = useState(false);
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    type: "alert" | "confirm" | "error" | "success";
+    onConfirm: () => void;
+  }>({
+    open: false,
+    title: "",
+    message: "",
+    type: "alert",
+    onConfirm: () => {},
+  });
 
   const filteredBadges = badges.filter((badge) => {
     const q = searchQuery.toLowerCase();
@@ -99,16 +114,20 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setLoading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this badge?")) return;
-    
-    const res = await fetch(`/api/badges/${id}`, {
-      method: "DELETE",
+  const handleDelete = (id: string) => {
+    setDialog({
+      open: true,
+      title: "Delete Badge",
+      message: "Are you sure you want to delete this badge? This action cannot be undone.",
+      type: "confirm",
+      onConfirm: async () => {
+        setDialog(prev => ({ ...prev, open: false }));
+        const res = await fetch(`/api/badges/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          setBadges(badges.filter((b) => b.id !== id));
+        }
+      },
     });
-
-    if (res.ok) {
-      setBadges(badges.filter((b) => b.id !== id));
-    }
   };
 
   const startEdit = (badge: Badge) => {
@@ -288,6 +307,15 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
           onClose={() => setAssigningId(null)} 
         />
       )}
+
+      <FeedbackDialog
+        open={dialog.open}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+        onConfirm={dialog.onConfirm}
+        onCancel={() => setDialog(prev => ({ ...prev, open: false }))}
+      />
     </div>
   );
 }

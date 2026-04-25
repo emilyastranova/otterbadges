@@ -4,6 +4,7 @@ import { Icon } from "@/components/MaterialUI";
 import styles from "./profile.module.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import FeedbackDialog from "@/components/FeedbackDialog";
 
 interface BadgeGridProps {
   badges: any[];
@@ -14,23 +15,49 @@ export default function BadgeGrid({ badges, isOwnProfile }: BadgeGridProps) {
   const router = useRouter();
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    type: "alert" | "confirm" | "error" | "success";
+    onConfirm: () => void;
+  }>({
+    open: false,
+    title: "",
+    message: "",
+    type: "alert",
+    onConfirm: () => {},
+  });
 
-  const handleRevoke = async (badgeId: string) => {
-    if (!confirm("Are you sure you want to remove this badge from your profile?")) return;
-    
-    setRevokingId(badgeId);
-    const res = await fetch("/api/badges/revoke", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ badgeId }),
+  const handleRevoke = (badgeId: string) => {
+    setDialog({
+      open: true,
+      title: "Remove Badge",
+      message: "Are you sure you want to remove this badge from your profile?",
+      type: "confirm",
+      onConfirm: async () => {
+        setDialog(prev => ({ ...prev, open: false }));
+        setRevokingId(badgeId);
+        const res = await fetch("/api/badges/revoke", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ badgeId }),
+        });
+
+        if (res.ok) {
+          router.refresh();
+        } else {
+          setDialog({
+            open: true,
+            title: "Error",
+            message: "Failed to remove badge",
+            type: "error",
+            onConfirm: () => setDialog(prev => ({ ...prev, open: false })),
+          });
+        }
+        setRevokingId(null);
+      },
     });
-
-    if (res.ok) {
-      router.refresh();
-    } else {
-      alert("Failed to remove badge");
-    }
-    setRevokingId(null);
   };
 
   return (
@@ -66,6 +93,15 @@ export default function BadgeGrid({ badges, isOwnProfile }: BadgeGridProps) {
         ))}
         {badges.length === 0 && <p>No badges earned yet.</p>}
       </div>
+
+      <FeedbackDialog
+        open={dialog.open}
+        title={dialog.title}
+        message={dialog.message}
+        type={dialog.type}
+        onConfirm={dialog.onConfirm}
+        onCancel={() => setDialog(prev => ({ ...prev, open: false }))}
+      />
     </div>
   );
 }

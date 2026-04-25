@@ -6,6 +6,7 @@ import {
   OutlinedTextField, Checkbox, ListItem 
 } from "@/components/MaterialUI";
 import styles from "./RecipientManager.module.css";
+import FeedbackDialog from "@/components/FeedbackDialog";
 
 interface UserRecipient {
   id: string;
@@ -28,6 +29,17 @@ export default function BadgeRecipientManager({ badgeId, badgeTitle, onClose }: 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    type: "alert" | "confirm" | "error" | "success";
+  }>({
+    open: false,
+    title: "",
+    message: "",
+    type: "alert",
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -67,7 +79,12 @@ export default function BadgeRecipientManager({ badgeId, badgeTitle, onClose }: 
       setSelectedIds(new Set());
       await fetchUsers();
     } else {
-      alert("Failed to update badges");
+      setDialog({
+        open: true,
+        title: "Error",
+        message: "Failed to update badges",
+        type: "error"
+      });
     }
     setSaving(false);
   };
@@ -82,6 +99,7 @@ export default function BadgeRecipientManager({ badgeId, badgeTitle, onClose }: 
   });
 
   return (
+    <>
     <Dialog 
       open 
       onClose={onClose} 
@@ -181,5 +199,14 @@ export default function BadgeRecipientManager({ badgeId, badgeTitle, onClose }: 
         </div>
       </div>
     </Dialog>
+
+    <FeedbackDialog
+      open={dialog.open}
+      title={dialog.title}
+      message={dialog.message}
+      type={dialog.type}
+      onConfirm={() => setDialog(prev => ({ ...prev, open: false }))}
+    />
+    </>
   );
 }

@@ -20,6 +20,12 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [assigningId, setAssigningId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredBadges = badges.filter((badge) => {
+    const q = searchQuery.toLowerCase();
+    return badge.title.toLowerCase().includes(q) || badge.description.toLowerCase().includes(q);
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -206,9 +212,18 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
         </div>
       </div>
 
-      <h2 style={{ marginTop: "3rem", marginBottom: "1rem" }}>Your Created Badges</h2>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "3rem", marginBottom: "1rem" }}>
+        <h2 style={{ margin: 0 }}>Your Created Badges</h2>
+        <OutlinedTextField
+          label="Filter badges..."
+          value={searchQuery}
+          onInput={(e: any) => setSearchQuery(e.target.value)}
+          style={{ width: "250px" }}
+        />
+      </div>
+      
       <div className={styles.grid}>
-        {badges.map((badge) => (
+        {filteredBadges.map((badge) => (
           <div key={badge.id} className={styles.badgeCard}>
             <img src={badge.imageUrl} alt={badge.title} width={40} height={40} />
             <div style={{ flex: 1 }}>
@@ -253,7 +268,9 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
             </div>
           </div>
         ))}
-        {badges.length === 0 && <p>You haven't created any badges yet.</p>}
+        {filteredBadges.length === 0 && (
+          <p>{searchQuery ? "No badges match your search." : "You haven't created any badges yet."}</p>
+        )}
       </div>
 
       {assigningId && (

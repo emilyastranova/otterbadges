@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { FilledButton, OutlinedTextField, Icon, TextButton, Checkbox } from "@/components/MaterialUI";
 import { Badge } from "@prisma/client";
 import styles from "./studio.module.css";
@@ -26,6 +26,12 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [editImageUrl, setEditImageUrl] = useState<string | null>(null);
+  const [useSmooth, setUseSmooth] = useState(true);
+  const [editUseSmooth, setEditUseSmooth] = useState(true);
+  const [rawSourceImage, setRawSourceImage] = useState<string | null>(null);
+  const [isAnimatedUpload, setIsAnimatedUpload] = useState(false);
+  const [editRawSourceImage, setEditRawSourceImage] = useState<string | null>(null);
+  const [editIsAnimatedUpload, setEditIsAnimatedUpload] = useState(false);
 
   const [dialog, setDialog] = useState<{
     open: boolean;
@@ -46,36 +52,24 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     return badge.title.toLowerCase().includes(q) || badge.description.toLowerCase().includes(q);
   });
 
-  const processFile = (file: File, callback: (result: string) => void) => {
-    const isAnimated = file.type === "image/gif" || file.type === "image/webp";
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
+  const resizeImage = useCallback((sourceDataUrl: string, smooth: boolean): Promise<string> => {
+    return new Promise((resolve) => {
       const img = new Image();
-      
       img.onload = () => {
-        if (isAnimated) {
-          // Preserve animation frames — pass the original data through untouched
-          callback(dataUrl);
-        } else {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          canvas.width = 40;
-          canvas.height = 40;
-          
-          if (ctx) {
-            // Nearest-neighbor interpolation for sharp pixel art
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(img, 0, 0, 40, 40);
-            callback(canvas.toDataURL("image/png"));
-          }
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 40;
+        canvas.height = 40;
+        if (ctx) {
+          ctx.imageSmoothingEnabled = smooth;
+          if (smooth) ctx.imageSmoothingQuality = "high";
+          ctx.drawImage(img, 0, 0, 40, 40);
+          resolve(canvas.toDataURL("image/png"));
         }
       };
-      img.src = dataUrl;
-    };
-    reader.readAsDataURL(file);
-  };
+      img.src = sourceDataUrl;
+    });
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,45 +78,65 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const isAnimated = file.type === "image/gif" || file.type === "image/webp";
     const reader = new FileReader();
 
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const dataUrl = event.target?.result as string;
-      const img = new Image();
-      
-      img.onload = () => {
-        const isLarger = img.width > 40 || img.height > 40;
+      setOriginalImage(dataUrl);
+      setRawSourceImage(dataUrl);
+      setIsAnimatedUpload(isAnimated);
 
-        if (isAnimated) {
-          setOriginalImage(dataUrl);
-          setResizedImage(dataUrl);
-          setImageUrl(dataUrl);
-          setShowPreview(isLarger);
-        } else {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          canvas.width = 40;
-          canvas.height = 40;
-          
-          if (ctx) {
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(img, 0, 0, 40, 40);
-            const resized = canvas.toDataURL("image/png");
-            
-            setOriginalImage(dataUrl);
-            setResizedImage(resized);
-            setImageUrl(resized);
-            setShowPreview(isLarger);
-          }
-        }
-      };
-      img.src = dataUrl;
+      if (isAnimated) {
+        setResizedImage(dataUrl);
+        setImageUrl(dataUrl);
+        setShowPreview(true);
+      } else {
+        const resized = await resizeImage(dataUrl, useSmooth);
+        setResizedImage(resized);
+        setImageUrl(resized);
+        const img = new Image();
+        img.onload = () => setShowPreview(img.width > 40 || img.height > 40);
+        img.src = dataUrl;
+      }
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleSmoothToggle = async (smooth: boolean) => {
+    setUseSmooth(smooth);
+    if (rawSourceImage && !isAnimatedUpload) {
+      const resized = await resizeImage(rawSourceImage, smooth);
+      setResizedImage(resized);
+      setImageUrl(resized);
+    }
   };
 
   const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    processFile(file, (result) => setEditImageUrl(result));
+
+    const isAnimated = file.type === "image/gif" || file.type === "image/webp";
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const dataUrl = event.target?.result as string;
+      setEditRawSourceImage(dataUrl);
+      setEditIsAnimatedUpload(isAnimated);
+
+      if (isAnimated) {
+        setEditImageUrl(dataUrl);
+      } else {
+        const resized = await resizeImage(dataUrl, editUseSmooth);
+        setEditImageUrl(resized);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleEditSmoothToggle = async (smooth: boolean) => {
+    setEditUseSmooth(smooth);
+    if (editRawSourceImage && !editIsAnimatedUpload) {
+      const resized = await resizeImage(editRawSourceImage, smooth);
+      setEditImageUrl(resized);
+    }
   };
 
   const handleCreate = async () => {
@@ -145,6 +159,9 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       setOriginalImage(null);
       setResizedImage(null);
       setShowPreview(false);
+      setRawSourceImage(null);
+      setIsAnimatedUpload(false);
+      setUseSmooth(true);
     }
     setLoading(false);
   };
@@ -171,6 +188,9 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setEditDesc(badge.description);
     setEditIsPublic(badge.isPublic);
     setEditImageUrl(null);
+    setEditRawSourceImage(null);
+    setEditIsAnimatedUpload(false);
+    setEditUseSmooth(true);
   };
 
   const handleUpdate = async () => {
@@ -191,6 +211,9 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       setBadges(badges.map((b) => (b.id === editingId ? updated : b)));
       setEditingId(null);
       setEditImageUrl(null);
+      setEditRawSourceImage(null);
+      setEditIsAnimatedUpload(false);
+      setEditUseSmooth(true);
     }
     setLoading(false);
   };
@@ -247,6 +270,17 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
               </div>
             )}
 
+            {rawSourceImage && !isAnimatedUpload && (
+              <div className={styles.checkboxField}>
+                <Checkbox
+                  checked={useSmooth}
+                  onChange={(e: any) => handleSmoothToggle(e.target.checked)}
+                  id="useSmooth"
+                />
+                <label htmlFor="useSmooth">Smooth scaling (uncheck for sharp pixel art)</label>
+              </div>
+            )}
+
             <div className={styles.checkboxField}>
               <Checkbox
                 checked={isPublic}
@@ -297,6 +331,16 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                       <input type="file" accept="image/*" onChange={handleEditFileChange} hidden />
                     </label>
                   </div>
+                  {editRawSourceImage && !editIsAnimatedUpload && (
+                    <div className={styles.checkboxField}>
+                      <Checkbox
+                        checked={editUseSmooth}
+                        onChange={(e: any) => handleEditSmoothToggle(e.target.checked)}
+                        id={`edit-smooth-${badge.id}`}
+                      />
+                      <label htmlFor={`edit-smooth-${badge.id}`}>Smooth scaling</label>
+                    </div>
+                  )}
                   <div className={styles.checkboxField}>
                     <Checkbox
                       checked={editIsPublic}
@@ -307,7 +351,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                   </div>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <FilledButton onClick={handleUpdate} disabled={loading}>Save</FilledButton>
-                    <TextButton onClick={() => { setEditingId(null); setEditImageUrl(null); }}>Cancel</TextButton>
+                    <TextButton onClick={() => { setEditingId(null); setEditImageUrl(null); setEditRawSourceImage(null); setEditIsAnimatedUpload(false); setEditUseSmooth(true); }}>Cancel</TextButton>
                   </div>
                 </div>
               ) : (

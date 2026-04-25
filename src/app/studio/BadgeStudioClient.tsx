@@ -25,6 +25,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [editIsPublic, setEditIsPublic] = useState(false);
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState<string | null>(null);
 
   const [dialog, setDialog] = useState<{
     open: boolean;
@@ -45,6 +46,37 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     return badge.title.toLowerCase().includes(q) || badge.description.toLowerCase().includes(q);
   });
 
+  const processFile = (file: File, callback: (result: string) => void) => {
+    const isAnimated = file.type === "image/gif" || file.type === "image/webp";
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      const img = new Image();
+      
+      img.onload = () => {
+        if (isAnimated) {
+          // Preserve animation frames — pass the original data through untouched
+          callback(dataUrl);
+        } else {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = 40;
+          canvas.height = 40;
+          
+          if (ctx) {
+            // Nearest-neighbor interpolation for sharp pixel art
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(img, 0, 0, 40, 40);
+            callback(canvas.toDataURL("image/png"));
+          }
+        }
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -57,12 +89,9 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       const img = new Image();
       
       img.onload = () => {
-        const targetWidth = 40;
-        const targetHeight = 40;
         const isLarger = img.width > 40 || img.height > 40;
 
         if (isAnimated) {
-          // Preserve animation frames — pass the original data through untouched
           setOriginalImage(dataUrl);
           setResizedImage(dataUrl);
           setImageUrl(dataUrl);
@@ -70,13 +99,12 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
         } else {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = targetWidth;
-          canvas.height = targetHeight;
+          canvas.width = 40;
+          canvas.height = 40;
           
           if (ctx) {
-            // Nearest-neighbor interpolation for sharp pixel art
             ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            ctx.drawImage(img, 0, 0, 40, 40);
             const resized = canvas.toDataURL("image/png");
             
             setOriginalImage(dataUrl);
@@ -89,6 +117,12 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       img.src = dataUrl;
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processFile(file, (result) => setEditImageUrl(result));
   };
 
   const handleCreate = async () => {
@@ -136,22 +170,27 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setEditTitle(badge.title);
     setEditDesc(badge.description);
     setEditIsPublic(badge.isPublic);
+    setEditImageUrl(null);
   };
 
   const handleUpdate = async () => {
     if (!editingId) return;
     setLoading(true);
 
+    const body: any = { title: editTitle, description: editDesc, isPublic: editIsPublic };
+    if (editImageUrl) body.imageUrl = editImageUrl;
+
     const res = await fetch(`/api/badges/${editingId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editTitle, description: editDesc, isPublic: editIsPublic }),
+      body: JSON.stringify(body),
     });
 
     if (res.ok) {
       const updated = await res.json();
       setBadges(badges.map((b) => (b.id === editingId ? updated : b)));
       setEditingId(null);
+      setEditImageUrl(null);
     }
     setLoading(false);
   };
@@ -237,7 +276,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       <div className={styles.grid}>
         {filteredBadges.map((badge) => (
           <div key={badge.id} className={styles.badgeCard}>
-            <img src={badge.imageUrl} alt={badge.title} width={40} height={40} />
+            <img src={editingId === badge.id && editImageUrl ? editImageUrl : badge.imageUrl} alt={badge.title} width={40} height={40} />
             <div style={{ flex: 1 }}>
               {editingId === badge.id ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -251,6 +290,13 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                     value={editDesc} 
                     onInput={(e: any) => setEditDesc(e.target.value)} 
                   />
+                  <div className={styles.fileUpload}>
+                    <label className={styles.fileLabel}>
+                      <Icon>image</Icon>
+                      <span>{editImageUrl ? "Image Changed ✓" : "Change Image"}</span>
+                      <input type="file" accept="image/*" onChange={handleEditFileChange} hidden />
+                    </label>
+                  </div>
                   <div className={styles.checkboxField}>
                     <Checkbox
                       checked={editIsPublic}
@@ -261,7 +307,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                   </div>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <FilledButton onClick={handleUpdate} disabled={loading}>Save</FilledButton>
-                    <TextButton onClick={() => setEditingId(null)}>Cancel</TextButton>
+                    <TextButton onClick={() => { setEditingId(null); setEditImageUrl(null); }}>Cancel</TextButton>
                   </div>
                 </div>
               ) : (

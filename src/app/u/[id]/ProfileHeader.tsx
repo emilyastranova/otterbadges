@@ -20,6 +20,7 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
     pronouns: user.pronouns || "",
     namePronunciation: user.namePronunciation || "",
     bio: user.bio || "",
+    teamRole: user.teamRole || "",
     themeColor: user.themeColor || "#6750A4",
     image: user.image || "",
   });
@@ -82,26 +83,39 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
             )}
           </div>
           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <OutlinedTextField
-              label="Name"
-              value={formData.name}
-              onInput={(e: any) => setFormData({ ...formData, name: e.target.value })}
-            />
-            <OutlinedTextField
-              label="Name Pronunciation"
-              value={formData.namePronunciation}
-              onInput={(e: any) => setFormData({ ...formData, namePronunciation: e.target.value })}
-            />
-            <OutlinedTextField
-              label="Pronouns"
-              value={formData.pronouns}
-              onInput={(e: any) => setFormData({ ...formData, pronouns: e.target.value })}
-            />
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <OutlinedTextField
+                label="Name"
+                value={formData.name}
+                onInput={(e: any) => setFormData({ ...formData, name: e.target.value })}
+                style={{ flex: 1 }}
+              />
+              <OutlinedTextField
+                label="Pronouns"
+                value={formData.pronouns}
+                onInput={(e: any) => setFormData({ ...formData, pronouns: e.target.value })}
+                style={{ width: "150px" }}
+              />
+            </div>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <OutlinedTextField
+                label="Name Pronunciation"
+                value={formData.namePronunciation}
+                onInput={(e: any) => setFormData({ ...formData, namePronunciation: e.target.value })}
+                style={{ flex: 1 }}
+              />
+              <OutlinedTextField
+                label="Team Role"
+                value={formData.teamRole}
+                onInput={(e: any) => setFormData({ ...formData, teamRole: e.target.value })}
+                style={{ flex: 1 }}
+              />
+            </div>
             <OutlinedTextField
               label="Bio"
               value={formData.bio}
               onInput={(e: any) => setFormData({ ...formData, bio: e.target.value })}
-              style={{ minHeight: "100px" }}
+              style={{ minHeight: "80px" }}
             />
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
               <span>Theme Color:</span>

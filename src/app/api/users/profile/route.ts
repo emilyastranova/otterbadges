@@ -11,7 +11,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { name, pronouns, namePronunciation, bio, themeColor, image } = body;
+    const { name, pronouns, namePronunciation, bio, teamRole, themeColor, image } = body;
 
     const updated = await prisma.user.update({
       where: { id: session.user.id },
@@ -20,6 +20,7 @@ export async function PATCH(req: Request) {
         pronouns,
         namePronunciation,
         bio,
+        teamRole,
         themeColor,
         image,
       },

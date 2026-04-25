@@ -18,6 +18,7 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
   const router = useRouter();
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [favoritingId, setFavoritingId] = useState<string | null>(null);
+  const [activeBadgeDescription, setActiveBadgeDescription] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [dialog, setDialog] = useState<{
     open: boolean;
@@ -91,6 +92,15 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
   const otherBadges = badges.filter(b => !b.isFavorite);
   const sortedBadges = [...favoriteBadges, ...otherBadges];
 
+  const handleBadgeClick = (description: string) => {
+    // Only show the mobile description if we're on a touch device / small screen
+    if (window.matchMedia("(max-width: 600px)").matches) {
+      setActiveBadgeDescription(description);
+      // Auto-hide after 3 seconds
+      setTimeout(() => setActiveBadgeDescription(null), 3000);
+    }
+  };
+
   return (
     <div className={styles.badgesSection}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
@@ -139,13 +149,18 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
 
       <div className={styles.badgeGrid}>
         {sortedBadges.map((ub) => (
-          <div key={ub.id} className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`} title={ub.badge.description}>
+          <div 
+            key={ub.id} 
+            className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`} 
+            title={ub.badge.description}
+            onClick={() => handleBadgeClick(ub.badge.description)}
+          >
             <img src={ub.badge.imageUrl} alt={ub.badge.title} />
             {isOwnProfile && isEditing && (
               <>
                 <button 
                   className={styles.revokeBadgeBtnVisible} 
-                  onClick={() => handleRevoke(ub.badgeId)}
+                  onClick={(e) => { e.stopPropagation(); handleRevoke(ub.badgeId); }}
                   disabled={revokingId === ub.badgeId}
                   title="Remove this badge"
                 >
@@ -153,7 +168,7 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
                 </button>
                 <button 
                   className={ub.isFavorite ? styles.favoriteBtnActive : styles.favoriteBtn} 
-                  onClick={() => toggleFavorite(ub.badgeId, ub.isFavorite)}
+                  onClick={(e) => { e.stopPropagation(); toggleFavorite(ub.badgeId, ub.isFavorite); }}
                   disabled={favoritingId === ub.badgeId}
                   title={ub.isFavorite ? "Unfavorite" : "Make Favorite"}
                 >
@@ -165,6 +180,12 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
         ))}
         {badges.length === 0 && <p>No badges earned yet.</p>}
       </div>
+
+      {activeBadgeDescription && (
+        <div className={styles.mobileDescriptionBubble}>
+          {activeBadgeDescription}
+        </div>
+      )}
 
       <FeedbackDialog
         open={dialog.open}

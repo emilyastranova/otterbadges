@@ -82,7 +82,18 @@ export default function BadgeRecipientManager({ badgeId, badgeTitle, onClose }: 
   });
 
   return (
-    <Dialog open onClose={onClose} style={{ maxWidth: "600px", width: "100%" }}>
+    <Dialog 
+      open 
+      onClose={onClose} 
+      style={{ 
+        maxWidth: "600px", 
+        width: "100%",
+        // @ts-ignore
+        "--md-dialog-container-color": "var(--md-sys-color-surface)",
+        "--md-dialog-headline-color": "var(--md-sys-color-on-surface)",
+        "--md-dialog-content-color": "var(--md-sys-color-on-surface)"
+      } as any}
+    >
       <div slot="headline" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         <Icon>group_add</Icon>
         Manage Recipients: {badgeTitle}

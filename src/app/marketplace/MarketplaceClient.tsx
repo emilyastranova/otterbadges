@@ -35,6 +35,7 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
 
     if (res.ok) {
       alert("Badge added to your profile!");
+      handleSearch(search); // Refresh list to show 'Collected'
     } else {
       const data = await res.json();
       alert(data.error || "Failed to collect badge");
@@ -57,19 +58,30 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
 
       <div className={styles.grid}>
         {badges.map((badge) => (
-          <div key={badge.id} className={styles.card}>
+          <div key={badge.id} className={`${styles.card} ${badge.hasBadge ? styles.cardCollected : ""}`}>
             <div className={styles.badgeHeader}>
               <img src={badge.imageUrl} alt={badge.title} width={40} height={40} />
               <div className={styles.badgeMeta}>
-                <h3>{badge.title}</h3>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <h3>{badge.title}</h3>
+                  {badge.hasBadge && (
+                    <span className={styles.collectedTag}>
+                      <Icon style={{ fontSize: "14px" }}>check_circle</Icon>
+                      Collected
+                    </span>
+                  )}
+                </div>
                 <p>by {badge.owner?.name || "Unknown"}</p>
               </div>
             </div>
             <p className={styles.description}>{badge.description}</p>
             <div className={styles.actions}>
-              <FilledButton onClick={() => handleCollect(badge.id)} disabled={loading}>
-                <Icon slot="icon">add</Icon>
-                Collect Badge
+              <FilledButton 
+                onClick={() => handleCollect(badge.id)} 
+                disabled={loading || badge.hasBadge}
+              >
+                <Icon slot="icon">{badge.hasBadge ? "done" : "add"}</Icon>
+                {badge.hasBadge ? "Collected" : "Collect Badge"}
               </FilledButton>
             </div>
           </div>

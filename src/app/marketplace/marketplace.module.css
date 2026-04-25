@@ -51,3 +51,23 @@
   justify-content: flex-end;
   margin-top: 0.5rem;
 }
+
+.cardCollected {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  background-color: var(--md-sys-color-surface-container-low);
+  border-style: dashed;
+}
+
+.collectedTag {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  font-weight: 500;
+}
+

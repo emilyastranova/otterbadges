@@ -1,18 +1,31 @@
 import { prisma } from "@/lib/prisma";
 import MarketplaceClient from "./MarketplaceClient";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function Marketplace() {
-  const initialBadges = await prisma.badge.findMany({
+  const session = await getServerSession(authOptions);
+  
+  const badges = await prisma.badge.findMany({
     where: { isPublic: true },
     include: {
       owner: {
         select: { name: true }
-      }
+      },
+      users: session?.user?.id ? {
+        where: { userId: session.user.id }
+      } : false
     },
     orderBy: { createdAt: "desc" },
   });
+
+  const initialBadges = badges.map(b => ({
+    ...b,
+    hasBadge: b.users ? b.users.length > 0 : false,
+    users: undefined
+  }));
 
   return (
     <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto" }}>

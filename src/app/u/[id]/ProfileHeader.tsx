@@ -186,7 +186,10 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <h1 style={{ margin: 0 }}>{user.name || "Unknown User"}</h1>
-            {user.pronouns && <span className={styles.pronounsDisplay}>{user.pronouns}</span>}
+            <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
+              {user.pronouns && <span className={styles.pronounsDisplay}>{user.pronouns}</span>}
+              {user.namePronunciation && <span className={styles.pronunciationDisplay}>({user.namePronunciation})</span>}
+            </div>
           </div>
           {isOwnProfile && (
             <FilledButton onClick={() => setIsEditing(true)} style={{ marginLeft: "auto" }}>
@@ -195,7 +198,6 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
             </FilledButton>
           )}
         </div>
-        {user.namePronunciation && <p className={styles.pronunciation}>({user.namePronunciation})</p>}
         {user.alias && <p className={styles.aliasDisplay}>@{user.alias}</p>}
         {user.teamRole && <p className={styles.role}>{user.teamRole}</p>}
         {user.bio && <p className={styles.bio}>{user.bio}</p>}

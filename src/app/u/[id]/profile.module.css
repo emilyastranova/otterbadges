@@ -97,8 +97,7 @@
   object-fit: contain;
 }
 
-.pronunciation {
-  margin: -0.5rem 0 0.5rem 0;
+.pronunciationDisplay {
   color: var(--md-sys-color-on-surface-variant);
   font-size: 0.875rem;
   opacity: 0.8;
@@ -297,7 +296,8 @@
   height: 44px;
 }
 
-.favoriteBtn, .favoriteBtnActive {
+.favoriteBtn,
+.favoriteBtnActive {
   position: absolute;
   bottom: -8px;
   left: -8px;
@@ -310,7 +310,7 @@
   justify-content: center;
   cursor: pointer;
   z-index: 30;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
 }
 
@@ -339,7 +339,7 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .favoriteIndicator {
@@ -355,5 +355,5 @@
   align-items: center;
   justify-content: center;
   z-index: 5;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }

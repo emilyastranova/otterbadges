@@ -2,7 +2,9 @@
 
 Create, distribute, and collect digital achievement badges across your organization.
 
-OtterBadges is a self-hosted badge platform built with Next.js and Material Design 3. Design custom badges in the built-in studio, award them to teammates, and showcase your favorites on a personalized profile — complete with dynamic theming, pronunciation guides, and a public directory.
+![OtterBadges Profile](assets/otterbadges_profile.png)
+
+OtterBadges is a self-hosted badge platform built with Next.js and Material Design 3. Design custom badges in the built-in studio, award them to teammates, and showcase your favorites on a personalized profile - complete with dynamic theming.
 
 ## Features
 

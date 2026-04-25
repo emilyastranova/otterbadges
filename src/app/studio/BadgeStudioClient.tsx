@@ -49,7 +49,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isGif = file.type === "image/gif";
+    const isAnimated = file.type === "image/gif" || file.type === "image/webp";
     const reader = new FileReader();
 
     reader.onload = (event) => {
@@ -61,7 +61,8 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
         const targetHeight = 40;
         const isLarger = img.width > 40 || img.height > 40;
 
-        if (isGif) {
+        if (isAnimated) {
+          // Preserve animation frames — pass the original data through untouched
           setOriginalImage(dataUrl);
           setResizedImage(dataUrl);
           setImageUrl(dataUrl);
@@ -73,8 +74,8 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
           canvas.height = targetHeight;
           
           if (ctx) {
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = "high";
+            // Nearest-neighbor interpolation for sharp pixel art
+            ctx.imageSmoothingEnabled = false;
             ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
             const resized = canvas.toDataURL("image/png");
             

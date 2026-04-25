@@ -43,6 +43,7 @@ model UserBadge {
   badgeId   String
   user      User     @relation(fields: [userId], references: [id])
   badge     Badge    @relation(fields: [badgeId], references: [id])
+  isFavorite Boolean  @default(false)
   assignedAt DateTime @default(now())
 
   @@unique([userId, badgeId])

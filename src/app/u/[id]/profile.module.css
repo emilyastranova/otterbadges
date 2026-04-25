@@ -238,3 +238,122 @@
   cursor: pointer;
   padding: 0;
 }
+
+.favoritesManager {
+  background-color: var(--md-sys-color-surface-container-low);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  border: 2px dashed var(--md-sys-color-outline-variant);
+}
+
+.favoritesManager h3 {
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+.favoritesManager p {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.85rem;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.favoriteSlots {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.favoriteSlot {
+  width: 56px;
+  height: 56px;
+  border-radius: 0.75rem;
+  background-color: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.emptySlotIcon {
+  color: var(--md-sys-color-outline);
+  opacity: 0.5;
+  font-size: 20px;
+}
+
+.favoriteSlot .badgeCard {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+}
+
+.favoriteSlot .badgeCard img {
+  width: 44px;
+  height: 44px;
+}
+
+.favoriteBtn, .favoriteBtnActive {
+  position: absolute;
+  bottom: -8px;
+  left: -8px;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+
+.favoriteBtn {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-outline);
+}
+
+.favoriteBtnActive {
+  background-color: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+}
+
+.unfavoriteBtn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.favoriteIndicator {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}

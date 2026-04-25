@@ -8,6 +8,13 @@ export const dynamic = "force-dynamic";
 export default async function Directory() {
   const users = await prisma.user.findMany({
     orderBy: { name: "asc" },
+    include: {
+      badges: {
+        where: { isFavorite: true },
+        include: { badge: true },
+        take: 5,
+      }
+    }
   });
 
   return (
@@ -24,9 +31,16 @@ export default async function Directory() {
                 <Icon>person</Icon>
               )}
             </div>
-            <div className={styles.info}>
-              <h3>{user.name || "Unknown User"}</h3>
-              <p>{user.teamRole || "No role specified"}</p>
+            <div className={styles.contentWrapper}>
+              <div className={styles.info}>
+                <h3>{user.name || "Unknown User"}</h3>
+                <p>{user.teamRole || "No role specified"}</p>
+              </div>
+              <div className={styles.favoriteBadges}>
+                {user.badges.map((ub) => (
+                  <img key={ub.id} src={ub.badge.imageUrl} alt={ub.badge.title} title={ub.badge.title} />
+                ))}
+              </div>
             </div>
             <Icon className={styles.arrow}>chevron_right</Icon>
           </Link>

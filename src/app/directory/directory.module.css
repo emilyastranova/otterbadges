@@ -40,8 +40,15 @@
   object-fit: cover;
 }
 
-.info {
+.contentWrapper {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.info {
+  /* Removed flex: 1 to allow badges to follow */
 }
 
 .info h3 {
@@ -59,4 +66,16 @@
 
 .arrow {
   color: var(--md-sys-color-on-surface-variant);
+}
+
+.favoriteBadges {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.favoriteBadges img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }

@@ -66,12 +66,8 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
           <h2>Earned Badges</h2>
           <div className={styles.badgeGrid}>
             {user.badges.map((ub) => (
-              <div key={ub.id} className={styles.badgeCard}>
+              <div key={ub.id} className={styles.badgeCard} title={ub.badge.description}>
                 <img src={ub.badge.imageUrl} alt={ub.badge.title} />
-                <div className={styles.badgeInfo}>
-                  <h3>{ub.badge.title}</h3>
-                  <p>{ub.badge.description}</p>
-                </div>
               </div>
             ))}
             {user.badges.length === 0 && <p>No badges earned yet.</p>}

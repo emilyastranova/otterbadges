@@ -49,14 +49,21 @@ export default function FeedbackDialog({
       onClose={onCancel || onConfirm}
       style={{
         // @ts-ignore
-        "--md-dialog-container-color": "var(--md-sys-color-surface-container-high)",
+        "--md-dialog-container-color": "var(--md-sys-color-surface)",
+        "--md-dialog-headline-color": "var(--md-sys-color-on-surface)",
+        "--md-dialog-content-color": "var(--md-sys-color-on-surface-variant)",
       } as any}
     >
-      <div slot="headline" style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+      <div slot="headline" style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        gap: "0.75rem",
+        color: "var(--md-sys-color-on-surface)"
+      }}>
         <Icon style={{ color: getIconColor() }}>{getIcon()}</Icon>
         {title}
       </div>
-      <div slot="content">
+      <div slot="content" style={{ color: "var(--md-sys-color-on-surface-variant)" }}>
         {message}
       </div>
       <div slot="actions">

@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦦 OtterBadges
+
+Create, distribute, and collect digital achievement badges across your organization.
+
+OtterBadges is a self-hosted badge platform built with Next.js and Material Design 3. Design custom badges in the built-in studio, award them to teammates, and showcase your favorites on a personalized profile — complete with dynamic theming, pronunciation guides, and a public directory.
+
+## Features
+
+- **Badge Studio** — Design badges with a live canvas editor and publish them to the marketplace
+- **Marketplace** — Browse and clone public badges created by other users
+- **User Profiles** — Customizable profiles with avatars, bios, pronouns, name pronunciation, and per-user Material 3 dynamic color theming
+- **Favorite Badges** — Pin up to 5 badges to highlight on your profile and directory listing
+- **User Directory** — Searchable directory of all users with their roles and favorite badges
+- **User Aliases** — Clean, human-readable profile URLs (e.g. `/u/emilysastranova`) instead of UUIDs
+- **Admin Panel** — Full control over users (rename, email, password reset, role management) and badges (edit title/description, delete)
+- **Mobile Responsive** — Collapsible navigation drawer, touch-friendly badge descriptions, and adaptive layouts
+- **Authentication** — Email/password and Google OAuth via NextAuth.js
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | [Next.js 16](https://nextjs.org/) (App Router, Turbopack) |
+| UI Components | [Material Web](https://github.com/nicolo-ribaudo/material-web) (Material Design 3) via `@lit/react` |
+| Theming | [material-color-utilities](https://github.com/nicolo-ribaudo/material-color-utilities) for dynamic color |
+| Database | SQLite via [better-sqlite3](https://github.com/nicolo-ribaudo/better-sqlite3) |
+| ORM | [Prisma](https://www.prisma.io/) with `@prisma/adapter-better-sqlite3` |
+| Auth | [NextAuth.js](https://next-auth.js.org/) (JWT strategy) |
+| Language | TypeScript, React 19 |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/emilyastranova/otterbadges.git
+cd otterbadges
+
+# Install dependencies
+npm install
+
+# Set up the database
+npx prisma db push
+npx prisma generate
+
+# Start the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app will be available at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env` file in the project root:
 
-## Learn More
+```env
+DATABASE_URL="file:./dev.db"
 
-To learn more about Next.js, take a look at the following resources:
+# Auth (required for Google OAuth, optional for credentials-only)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+NEXTAUTH_SECRET="your-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── admin/          # Admin control panel
+│   ├── api/            # API routes (auth, badges, users, admin)
+│   ├── directory/      # User directory page
+│   ├── login/          # Sign in / sign up
+│   ├── marketplace/    # Public badge marketplace
+│   ├── studio/         # Badge creation studio
+│   └── u/[id]/         # User profile pages
+├── components/         # Shared components (NavBar, MaterialUI wrappers, FeedbackDialog)
+├── lib/                # Prisma client, auth config, utilities
+└── types/              # TypeScript type augmentations
+prisma/
+└── schema.prisma       # Database schema
+```
 
-## Deploy on Vercel
+## Admin Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To grant admin privileges to a user, update their role directly in the database:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+sqlite3 dev.db "UPDATE User SET role = 'ADMIN' WHERE alias = 'youralias';"
+```
+
+Admins see an **Admin** link in the navigation bar and can access `/admin` to manage all users and badges.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

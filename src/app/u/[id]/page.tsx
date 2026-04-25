@@ -7,6 +7,7 @@ import UserThemeContainer from "./UserThemeContainer";
 import { Icon } from "@/components/MaterialUI";
 import AssignBadgeButton from "./AssignBadgeButton";
 import ProfileHeader from "./ProfileHeader";
+import BadgeGrid from "./BadgeGrid";
 
 export default async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -48,14 +49,7 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
 
         <div className={styles.badgesSection}>
           <h2>Earned Badges</h2>
-          <div className={styles.badgeGrid}>
-            {user.badges.map((ub) => (
-              <div key={ub.id} className={styles.badgeCard} title={ub.badge.description}>
-                <img src={ub.badge.imageUrl} alt={ub.badge.title} />
-              </div>
-            ))}
-            {user.badges.length === 0 && <p>No badges earned yet.</p>}
-          </div>
+          <BadgeGrid badges={user.badges} isOwnProfile={isOwnProfile} />
         </div>
       </div>
     </UserThemeContainer>

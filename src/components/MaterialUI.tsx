@@ -12,6 +12,7 @@ import { MdIcon } from "@material/web/icon/icon.js";
 import { MdList } from "@material/web/list/list.js";
 import { MdListItem } from "@material/web/list/list-item.js";
 import { MdCheckbox } from "@material/web/checkbox/checkbox.js";
+import { MdIconButton } from "@material/web/iconbutton/icon-button.js";
 
 export const FilledButton = createComponent({
   react: React,
@@ -35,6 +36,15 @@ export const TextButton = createComponent({
   react: React,
   tagName: "md-text-button",
   elementClass: MdTextButton,
+  events: {
+    onClick: "click",
+  },
+});
+
+export const IconButton = createComponent({
+  react: React,
+  tagName: "md-icon-button",
+  elementClass: MdIconButton,
   events: {
     onClick: "click",
   },

@@ -173,3 +173,27 @@
 .assignBtn:hover {
   background-color: var(--md-sys-color-tertiary-container);
 }
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.publicBadgeTag {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  background-color: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+  padding: 0.1rem 0.4rem;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+

@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return Res.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, description, imageUrl } = await req.json();
+    const { title, description, imageUrl, isPublic } = await req.json();
 
     if (!title || !description || !imageUrl) {
       return Res.json({ error: "Missing fields" }, { status: 400 });
@@ -21,6 +21,7 @@ export async function POST(req: Request) {
         title,
         description,
         imageUrl,
+        isPublic: !!isPublic,
         ownerId: session.user.id,
       },
     });

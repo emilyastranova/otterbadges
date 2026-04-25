@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FilledButton, OutlinedTextField, Icon, TextButton } from "@/components/MaterialUI";
+import { FilledButton, OutlinedTextField, Icon, TextButton, Checkbox } from "@/components/MaterialUI";
 import { Badge } from "@prisma/client";
 import styles from "./studio.module.css";
 
@@ -15,10 +15,12 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [resizedImage, setResizedImage] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
+  const [editIsPublic, setEditIsPublic] = useState(false);
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -44,14 +46,11 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
         const isLarger = img.width > 40 || img.height > 40;
 
         if (isGif) {
-          // For GIFs, we keep the original data to preserve animation
-          // We just show the preview of it scaled down
           setOriginalImage(dataUrl);
-          setResizedImage(dataUrl); // This will be scaled via CSS in the preview
+          setResizedImage(dataUrl);
           setImageUrl(dataUrl);
           setShowPreview(isLarger);
         } else {
-          // For other images, we resize via Canvas
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
           canvas.width = targetWidth;
@@ -82,7 +81,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const res = await fetch("/api/badges", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, imageUrl }),
+      body: JSON.stringify({ title, description, imageUrl, isPublic }),
     });
 
     if (res.ok) {
@@ -91,6 +90,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       setTitle("");
       setDescription("");
       setImageUrl("");
+      setIsPublic(false);
       setOriginalImage(null);
       setResizedImage(null);
       setShowPreview(false);
@@ -114,6 +114,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setEditingId(badge.id);
     setEditTitle(badge.title);
     setEditDesc(badge.description);
+    setEditIsPublic(badge.isPublic);
   };
 
   const handleUpdate = async () => {
@@ -123,7 +124,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const res = await fetch(`/api/badges/${editingId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editTitle, description: editDesc }),
+      body: JSON.stringify({ title: editTitle, description: editDesc, isPublic: editIsPublic }),
     });
 
     if (res.ok) {
@@ -205,6 +206,15 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
               </div>
             )}
 
+            <div className={styles.checkboxField}>
+              <Checkbox
+                checked={isPublic}
+                onChange={(e: any) => setIsPublic(e.target.checked)}
+                id="isPublic"
+              />
+              <label htmlFor="isPublic">Publish to Marketplace (Anyone can get this badge)</label>
+            </div>
+
             <FilledButton onClick={handleCreate} disabled={loading || !title || !imageUrl}>
               {loading ? "Creating..." : "Create Badge"}
             </FilledButton>
@@ -239,6 +249,14 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                     value={editDesc} 
                     onInput={(e: any) => setEditDesc(e.target.value)} 
                   />
+                  <div className={styles.checkboxField}>
+                    <Checkbox
+                      checked={editIsPublic}
+                      onChange={(e: any) => setEditIsPublic(e.target.checked)}
+                      id={`edit-isPublic-${badge.id}`}
+                    />
+                    <label htmlFor={`edit-isPublic-${badge.id}`}>Publish to Marketplace</label>
+                  </div>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <FilledButton onClick={handleUpdate} disabled={loading}>Save</FilledButton>
                     <TextButton onClick={() => setEditingId(null)}>Cancel</TextButton>
@@ -246,7 +264,15 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                 </div>
               ) : (
                 <>
-                  <h3>{badge.title}</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <h3>{badge.title}</h3>
+                    {badge.isPublic && (
+                      <span className={styles.publicBadgeTag}>
+                        <Icon style={{ fontSize: "14px" }}>store</Icon>
+                        Marketplace
+                      </span>
+                    )}
+                  </div>
                   <p>{badge.description}</p>
                 </>
               )}

@@ -28,6 +28,7 @@ model Badge {
   title       String
   description String
   imageUrl    String
+  isPublic    Boolean     @default(false)
   ownerId     String
   owner       User        @relation("CreatedBadges", fields: [ownerId], references: [id])
   users       UserBadge[]

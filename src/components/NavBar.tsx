@@ -25,6 +25,7 @@ export function NavBar() {
 
       <div className={styles.links}>
         <Link href="/directory"><TextButton>Directory</TextButton></Link>
+        <Link href="/marketplace"><TextButton>Marketplace</TextButton></Link>
         <Link href="/studio"><TextButton>Badge Studio</TextButton></Link>
         
         {mounted && (

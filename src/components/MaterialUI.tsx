@@ -11,6 +11,7 @@ import { MdDialog } from "@material/web/dialog/dialog.js";
 import { MdIcon } from "@material/web/icon/icon.js";
 import { MdList } from "@material/web/list/list.js";
 import { MdListItem } from "@material/web/list/list-item.js";
+import { MdCheckbox } from "@material/web/checkbox/checkbox.js";
 
 export const FilledButton = createComponent({
   react: React,
@@ -78,4 +79,16 @@ export const ListItem = createComponent({
   react: React,
   tagName: "md-list-item",
   elementClass: MdListItem,
+  events: {
+    onClick: "click",
+  },
+});
+
+export const Checkbox = createComponent({
+  react: React,
+  tagName: "md-checkbox",
+  elementClass: MdCheckbox,
+  events: {
+    onChange: "change",
+  },
 });

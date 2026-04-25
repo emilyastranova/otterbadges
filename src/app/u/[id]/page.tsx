@@ -51,13 +51,12 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
       <div className={styles.container}>
         <ProfileHeader user={user} isOwnProfile={isOwnProfile} />
 
-        {session?.user && !isOwnProfile && ownedBadges.length > 0 && (
-          <div style={{ marginBottom: "2rem" }}>
-            <AssignBadgeButton targetUserId={user.id} ownedBadges={ownedBadges} />
-          </div>
-        )}
-
-        <BadgeGrid badges={user.badges} isOwnProfile={isOwnProfile} />
+        <BadgeGrid 
+          badges={user.badges} 
+          isOwnProfile={isOwnProfile} 
+          targetUserId={user.id}
+          ownedBadges={ownedBadges}
+        />
       </div>
     </UserThemeContainer>
   );

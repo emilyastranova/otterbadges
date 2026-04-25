@@ -5,13 +5,16 @@ import styles from "./profile.module.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FeedbackDialog from "@/components/FeedbackDialog";
+import AssignBadgeButton from "./AssignBadgeButton";
 
 interface BadgeGridProps {
   badges: any[];
   isOwnProfile: boolean;
+  targetUserId?: string;
+  ownedBadges?: any[];
 }
 
-export default function BadgeGrid({ badges, isOwnProfile }: BadgeGridProps) {
+export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBadges }: BadgeGridProps) {
   const router = useRouter();
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [favoritingId, setFavoritingId] = useState<string | null>(null);
@@ -102,6 +105,9 @@ export default function BadgeGrid({ badges, isOwnProfile }: BadgeGridProps) {
             <Icon style={{ fontSize: "18px" }}>{isEditing ? "done" : "edit"}</Icon>
             {isEditing ? "Done" : "Manage Badges"}
           </button>
+        )}
+        {!isOwnProfile && targetUserId && ownedBadges && ownedBadges.length > 0 && (
+          <AssignBadgeButton targetUserId={targetUserId} ownedBadges={ownedBadges} />
         )}
       </div>
 

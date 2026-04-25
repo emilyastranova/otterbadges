@@ -16,12 +16,19 @@ export async function POST(req: Request) {
       return Res.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    // Verify the current user owns the badge
+    // Verify the current user owns the badge OR the badge is public
     const badge = await prisma.badge.findUnique({
       where: { id: badgeId },
     });
 
-    if (!badge || badge.ownerId !== session.user.id) {
+    if (!badge) {
+      return Res.json({ error: "Badge not found" }, { status: 404 });
+    }
+
+    const isOwner = badge.ownerId === session.user.id;
+    const isPublic = badge.isPublic;
+
+    if (!isOwner && !isPublic) {
       return Res.json({ error: "You don't own this badge" }, { status: 403 });
     }
 

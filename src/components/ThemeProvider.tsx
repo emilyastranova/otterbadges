@@ -1,17 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import { themeFromSourceColor, argbFromHex } from "@material/material-color-utilities";
 
+const ThemeContext = createContext<{
+  sourceColor: string;
+  setSourceColor: (color: string) => void;
+}>({
+  sourceColor: "#6750A4",
+  setSourceColor: () => {},
+});
+
+export const useMaterialTheme = () => useContext(ThemeContext);
+
 export function MaterialThemeProvider({
   children,
-  sourceColor = "#6750A4", // Default seed color
 }: {
   children: React.ReactNode;
-  sourceColor?: string;
 }) {
   const { theme, systemTheme } = useTheme();
+  const { sourceColor } = useMaterialTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -47,6 +56,9 @@ export function MaterialThemeProvider({
       root.style.setProperty(cssKey, hexColor(value));
     }
 
+    root.style.setProperty("background-color", hexColor(scheme.background));
+    root.style.setProperty("color", hexColor(scheme.onBackground));
+
   }, [sourceColor, theme, systemTheme, mounted]);
 
   // To prevent hydration mismatch, only render children once mounted if theme dependent,
@@ -55,11 +67,15 @@ export function MaterialThemeProvider({
 }
 
 export function ThemeProviders({ children }: { children: React.ReactNode }) {
+  const [sourceColor, setSourceColor] = useState("#6750A4");
+
   return (
     <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
-      <MaterialThemeProvider sourceColor="#6750A4">
-        {children}
-      </MaterialThemeProvider>
+      <ThemeContext.Provider value={{ sourceColor, setSourceColor }}>
+        <MaterialThemeProvider>
+          {children}
+        </MaterialThemeProvider>
+      </ThemeContext.Provider>
     </NextThemesProvider>
   );
 }

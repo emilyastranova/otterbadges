@@ -1,0 +1,175 @@
+.card {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+}
+
+.form {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badgePreview {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--md-sys-color-surface-variant);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.badgePreview img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.badgeCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.badgeCard h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+.badgeCard p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--md-sys-color-on-surface);
+  opacity: 0.7;
+}
+
+.fileUpload {
+  margin: 1rem 0;
+}
+
+.fileLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background-color: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-primary);
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.fileLabel:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+}
+
+.comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  background-color: var(--md-sys-color-surface-container-lowest);
+  border-radius: 0.5rem;
+  border: 1px dashed var(--md-sys-color-outline-variant);
+  margin-bottom: 1rem;
+}
+
+.comparison p {
+  font-size: 0.75rem;
+  margin: 0 0 0.25rem 0;
+  text-align: center;
+}
+
+.origThumb {
+  max-width: 60px;
+  max-height: 60px;
+  object-fit: contain;
+}
+
+.resizedThumb {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border: 1px solid var(--md-sys-color-outline);
+}
+
+.badgeActions {
+  display: flex;
+  align-items: center;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-error);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.deleteBtn:hover {
+  background-color: var(--md-sys-color-error-container);
+}
+
+.editBtn {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-primary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.editBtn:hover {
+  background-color: var(--md-sys-color-primary-container);
+}
+
+.assignBtn {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-tertiary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.assignBtn:hover {
+  background-color: var(--md-sys-color-tertiary-container);
+}

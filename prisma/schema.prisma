@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id         String      @id @default(uuid())
+  name       String?
+  email      String?     @unique
+  password   String?
+  image      String?
+  pronouns   String?
+  teamRole   String?
+  themeColor String?     @default("#6750A4") // Default Material 3 Primary Color
+  badges     UserBadge[]
+  createdBadges Badge[]  @relation("CreatedBadges")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  imageUrl    String
+  ownerId     String
+  owner       User        @relation("CreatedBadges", fields: [ownerId], references: [id])
+  users       UserBadge[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  badgeId   String
+  user      User     @relation(fields: [userId], references: [id])
+  badge     Badge    @relation(fields: [badgeId], references: [id])
+  assignedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}

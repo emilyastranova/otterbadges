@@ -6,6 +6,7 @@ import { Badge } from "@prisma/client";
 import styles from "./studio.module.css";
 
 import UserSelectorDialog from "./UserSelectorDialog";
+import BadgeRecipientManager from "./BadgeRecipientManager";
 
 export default function BadgeStudioClient({ initialBadges }: { initialBadges: Badge[] }) {
   const [badges, setBadges] = useState<Badge[]>(initialBadges);
@@ -135,25 +136,6 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setLoading(false);
   };
 
-  const handleAssign = async (userId: string) => {
-    if (!assigningId) return;
-    setLoading(true);
-
-    const res = await fetch("/api/assign", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ targetUserId: userId, badgeId: assigningId }),
-    });
-
-    if (res.ok) {
-      alert("Badge assigned successfully!");
-      setAssigningId(null);
-    } else {
-      const data = await res.json();
-      alert(data.error || "Failed to assign badge");
-    }
-    setLoading(false);
-  };
 
   return (
     <div>
@@ -300,9 +282,10 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       </div>
 
       {assigningId && (
-        <UserSelectorDialog 
+        <BadgeRecipientManager 
+          badgeId={assigningId}
+          badgeTitle={badges.find(b => b.id === assigningId)?.title || ""}
           onClose={() => setAssigningId(null)} 
-          onSelect={handleAssign} 
         />
       )}
     </div>

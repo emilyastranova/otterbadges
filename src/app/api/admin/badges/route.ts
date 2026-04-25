@@ -40,3 +40,23 @@ export async function DELETE(req: Request) {
 
   return Res.json({ message: "Badge deleted" });
 }
+
+export async function PATCH(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any).role !== "ADMIN") {
+    return Res.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { badgeId, title, description } = await req.json();
+
+  const data: any = {};
+  if (title !== undefined) data.title = title;
+  if (description !== undefined) data.description = description;
+
+  const updated = await prisma.badge.update({
+    where: { id: badgeId },
+    data,
+  });
+
+  return Res.json(updated);
+}

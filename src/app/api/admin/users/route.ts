@@ -31,10 +31,11 @@ export async function PATCH(req: Request) {
     return Res.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { userId, name, role, password } = await req.json();
+  const { userId, name, email, role, password } = await req.json();
 
   const data: any = {};
   if (name !== undefined) data.name = name;
+  if (email !== undefined) data.email = email;
   if (role !== undefined) data.role = role;
   if (password) {
     data.password = await bcrypt.hash(password, 10);

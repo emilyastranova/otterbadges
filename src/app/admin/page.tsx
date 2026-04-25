@@ -50,6 +50,20 @@ export default function AdminPage() {
     }
   };
 
+  const handleUpdateBadge = async (badgeId: string, updates: any) => {
+    const res = await fetch("/api/admin/badges", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ badgeId, ...updates }),
+    });
+    if (res.ok) {
+      setDialog({ open: true, title: "Success", message: "Badge updated successfully", type: "success" });
+      fetchData();
+    } else {
+      setDialog({ open: true, title: "Error", message: "Failed to update badge", type: "error" });
+    }
+  };
+
   const handleDeleteBadge = async (badgeId: string) => {
     setDialog({
       open: true,
@@ -122,6 +136,12 @@ export default function AdminPage() {
                       Rename
                     </OutlinedButton>
                     <OutlinedButton onClick={() => {
+                      const newEmail = prompt("Enter new email for " + user.name, user.email);
+                      if (newEmail) handleUpdateUser(user.id, { email: newEmail });
+                    }}>
+                      Change Email
+                    </OutlinedButton>
+                    <OutlinedButton onClick={() => {
                       const newPass = prompt("Enter new password for " + user.name);
                       if (newPass) handleUpdateUser(user.id, { password: newPass });
                     }}>
@@ -145,6 +165,18 @@ export default function AdminPage() {
                     <small>Owner: {badge.owner.name} (@{badge.owner.alias}) • Used by {badge._count.users} users</small>
                   </div>
                   <div className={styles.cardActions}>
+                    <OutlinedButton onClick={() => {
+                      const newTitle = prompt("Enter new title", badge.title);
+                      if (newTitle) handleUpdateBadge(badge.id, { title: newTitle });
+                    }}>
+                      Edit Title
+                    </OutlinedButton>
+                    <OutlinedButton onClick={() => {
+                      const newDesc = prompt("Enter new description", badge.description);
+                      if (newDesc) handleUpdateBadge(badge.id, { description: newDesc });
+                    }}>
+                      Edit Desc
+                    </OutlinedButton>
                     <IconButton onClick={() => handleDeleteBadge(badge.id)} style={{ color: "var(--md-sys-color-error)" }}>
                       <Icon>delete</Icon>
                     </IconButton>

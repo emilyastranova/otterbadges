@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { generateUniqueAlias } from "./utils";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -43,15 +44,46 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user }) {
+      // Clear large fields that might have leaked from providers or previous sessions
+      if (token.picture) delete token.picture;
+      if (token.image) delete token.image;
+
       if (user) {
         token.id = user.id;
+        token.alias = (user as any).alias;
+        token.email = user.email;
+        token.name = user.name;
+      } else if (token.id) {
+        // Refresh alias from DB occasionally
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { name: true, alias: true }
+        });
+        if (dbUser) {
+          if (!dbUser.alias && dbUser.name) {
+            const newAlias = await generateUniqueAlias(dbUser.name);
+            await prisma.user.update({
+              where: { id: token.id as string },
+              data: { alias: newAlias }
+            });
+            token.alias = newAlias;
+          } else {
+            token.alias = dbUser.alias;
+          }
+          token.name = dbUser.name;
+        }
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.alias = token.alias as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        // Ensure image is NOT in the session cookie if it's large
+        delete (session.user as any).image;
       }
       return session;
     },

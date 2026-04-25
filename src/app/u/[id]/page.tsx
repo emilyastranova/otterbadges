@@ -14,8 +14,13 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
   
   const { id } = await params;
 
-  const user = await prisma.user.findUnique({
-    where: { id: id },
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { id: id },
+        { alias: id },
+      ],
+    },
     include: {
       badges: {
         include: { badge: true },

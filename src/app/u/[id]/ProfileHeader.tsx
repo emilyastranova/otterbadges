@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Icon, FilledButton, OutlinedTextField, TextButton } from "@/components/MaterialUI";
 import styles from "./profile.module.css";
 import { useRouter } from "next/navigation";
+import FeedbackDialog from "@/components/FeedbackDialog";
 
 interface ProfileHeaderProps {
   user: any;
@@ -17,12 +18,25 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
 
   const [formData, setFormData] = useState({
     name: user.name || "",
+    alias: user.alias || "",
     pronouns: user.pronouns || "",
     namePronunciation: user.namePronunciation || "",
     bio: user.bio || "",
     teamRole: user.teamRole || "",
     themeColor: user.themeColor || "#6750A4",
     image: user.image || "",
+  });
+
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    type: "alert" | "error" | "success";
+  }>({
+    open: false,
+    title: "",
+    message: "",
+    type: "alert",
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +71,20 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
 
     if (res.ok) {
       setIsEditing(false);
-      router.refresh();
+      // If alias changed, we need to redirect to the new URL to avoid 404 on refresh
+      if (formData.alias && formData.alias !== user.alias) {
+        router.push(`/u/${formData.alias}`);
+      } else {
+        router.refresh();
+      }
+    } else {
+      const data = await res.json();
+      setDialog({
+        open: true,
+        title: "Error Updating Profile",
+        message: data.error || "Something went wrong.",
+        type: "error"
+      });
     }
     setLoading(false);
   };
@@ -90,6 +117,14 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
                 onInput={(e: any) => setFormData({ ...formData, name: e.target.value })}
                 style={{ flex: 1 }}
               />
+              <OutlinedTextField
+                label="Alias (URL handle)"
+                value={formData.alias}
+                onInput={(e: any) => setFormData({ ...formData, alias: e.target.value.toLowerCase().replace(/\s+/g, "") })}
+                style={{ flex: 1 }}
+              >
+                <Icon slot="leading-icon">alternate_email</Icon>
+              </OutlinedTextField>
               <OutlinedTextField
                 label="Pronouns"
                 value={formData.pronouns}
@@ -138,6 +173,7 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
   }
 
   return (
+    <>
     <div className={styles.header}>
       <div className={styles.avatar}>
         {user.image ? (
@@ -148,7 +184,10 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
       </div>
       <div className={styles.info}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <h1>{user.name || "Unknown User"}</h1>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <h1 style={{ margin: 0 }}>{user.name || "Unknown User"}</h1>
+            {user.alias && <span className={styles.aliasDisplay}>@{user.alias}</span>}
+          </div>
           {isOwnProfile && (
             <FilledButton onClick={() => setIsEditing(true)} style={{ marginLeft: "auto" }}>
               <Icon slot="icon">edit</Icon>
@@ -162,5 +201,14 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
         {user.bio && <p className={styles.bio}>{user.bio}</p>}
       </div>
     </div>
+
+    <FeedbackDialog
+      open={dialog.open}
+      title={dialog.title}
+      message={dialog.message}
+      type={dialog.type}
+      onConfirm={() => setDialog(prev => ({ ...prev, open: false }))}
+    />
+    </>
   );
 }

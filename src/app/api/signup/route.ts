@@ -1,6 +1,7 @@
 import { NextResponse as Res } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { generateUniqueAlias } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const alias = await generateUniqueAlias(name);
 
     const user = await prisma.user.create({
       data: {

@@ -36,7 +36,7 @@ export function NavBar() {
 
         {session ? (
           <div className={styles.userMenu}>
-            <Link href={`/u/${session.user.id}`}>
+            <Link href={`/u/${session.user.alias || session.user.id}`}>
               <TextButton>Profile</TextButton>
             </Link>
             <FilledButton onClick={() => signOut()}>Sign Out</FilledButton>

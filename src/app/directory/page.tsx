@@ -16,7 +16,7 @@ export default async function Directory() {
       
       <div className={styles.list}>
         {users.map((user) => (
-          <Link key={user.id} href={`/u/${user.id}`} className={styles.card}>
+          <Link key={user.id} href={`/u/${user.alias || user.id}`} className={styles.card}>
             <div className={styles.avatar}>
               {user.image ? (
                 <img src={user.image} alt={user.name || "User"} />

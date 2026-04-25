@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import styles from "./profile.module.css";
 import UserThemeContainer from "./UserThemeContainer";
 import { Icon } from "@/components/MaterialUI";
@@ -30,6 +30,11 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
 
   if (!user) {
     notFound();
+  }
+
+  // If the user was found by ID but they have an alias, and we're NOT already using that alias, redirect.
+  if (id === user.id && user.alias && id !== user.alias) {
+    redirect(`/u/${user.alias}`);
   }
 
   const isOwnProfile = session?.user?.id === user.id;

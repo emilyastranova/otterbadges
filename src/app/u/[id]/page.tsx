@@ -47,10 +47,7 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
           </div>
         )}
 
-        <div className={styles.badgesSection}>
-          <h2>Earned Badges</h2>
-          <BadgeGrid badges={user.badges} isOwnProfile={isOwnProfile} />
-        </div>
+        <BadgeGrid badges={user.badges} isOwnProfile={isOwnProfile} />
       </div>
     </UserThemeContainer>
   );

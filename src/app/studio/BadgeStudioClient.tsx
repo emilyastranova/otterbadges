@@ -25,37 +25,46 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const isGif = file.type === "image/gif";
     const reader = new FileReader();
+
     reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
       const img = new Image();
+      
       img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        
         const targetWidth = 40;
         const targetHeight = 40;
-        
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        
-        if (ctx) {
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = "high";
-          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+        const isLarger = img.width > 40 || img.height > 40;
+
+        if (isGif) {
+          // For GIFs, we keep the original data to preserve animation
+          // We just show the preview of it scaled down
+          setOriginalImage(dataUrl);
+          setResizedImage(dataUrl); // This will be scaled via CSS in the preview
+          setImageUrl(dataUrl);
+          setShowPreview(isLarger);
+        } else {
+          // For other images, we resize via Canvas
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
           
-          const resized = canvas.toDataURL("image/png");
-          setOriginalImage(event.target?.result as string);
-          setResizedImage(resized);
-          setImageUrl(resized);
-          
-          if (img.width > 40 || img.height > 40) {
-            setShowPreview(true);
-          } else {
-            setShowPreview(false);
+          if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            const resized = canvas.toDataURL("image/png");
+            
+            setOriginalImage(dataUrl);
+            setResizedImage(resized);
+            setImageUrl(resized);
+            setShowPreview(isLarger);
           }
         }
       };
-      img.src = event.target?.result as string;
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
   };

@@ -297,13 +297,13 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
         </div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "3rem", marginBottom: "1rem" }}>
+      <div className={styles.sectionHeader}>
         <h2 style={{ margin: 0 }}>Your Created Badges</h2>
         <OutlinedTextField
           label="Filter badges..."
           value={searchQuery}
           onInput={(e: any) => setSearchQuery(e.target.value)}
-          style={{ width: "250px" }}
+          className={styles.filterField}
         />
       </div>
       

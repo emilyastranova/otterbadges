@@ -67,7 +67,7 @@ export function MaterialThemeProvider({
 }
 
 export function ThemeProviders({ children }: { children: React.ReactNode }) {
-  const [sourceColor, setSourceColor] = useState("#6750A4");
+  const [sourceColor, setSourceColor] = useState("#03A9F4");
 
   return (
     <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>

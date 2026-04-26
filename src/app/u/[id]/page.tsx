@@ -47,7 +47,7 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <UserThemeContainer sourceColor={user.themeColor || "#6750A4"}>
+    <UserThemeContainer sourceColor={user.themeColor || "#03A9F4"}>
       <div className={styles.container}>
         <ProfileHeader user={user} isOwnProfile={isOwnProfile} />
 

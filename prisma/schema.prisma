@@ -17,7 +17,7 @@ model User {
   image      String?
   pronouns   String?
   teamRole   String?
-  themeColor String?     @default("#6750A4") // Default Material 3 Primary Color
+  themeColor String?     @default("#03A9F4") // Default Material 3 Primary Color
   role       String      @default("USER")
   badges     UserBadge[]
   createdBadges Badge[]  @relation("CreatedBadges")

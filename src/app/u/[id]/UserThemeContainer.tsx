@@ -17,7 +17,7 @@ export default function UserThemeContainer({
     
     return () => {
       // Revert to default purple when leaving the profile
-      setSourceColor("#6750A4");
+      setSourceColor("#03A9F4");
     };
   }, [sourceColor, setSourceColor]);
 

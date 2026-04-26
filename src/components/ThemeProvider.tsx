@@ -8,7 +8,7 @@ const ThemeContext = createContext<{
   sourceColor: string;
   setSourceColor: (color: string) => void;
 }>({
-  sourceColor: "#6750A4",
+  sourceColor: "#03A9F4",
   setSourceColor: () => {},
 });
 

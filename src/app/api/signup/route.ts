@@ -25,7 +25,7 @@ export async function POST(req: Request) {
         password: hashedPassword,
         name,
         // Give them a random default theme color based on their name length
-        themeColor: ["#6750A4", "#B3261E", "#386A20", "#006874", "#825500"][name.length % 5],
+        themeColor: ["#03A9F4", "#B3261E", "#386A20", "#006874", "#825500"][name.length % 5],
       },
     });
 

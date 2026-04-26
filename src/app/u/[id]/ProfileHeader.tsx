@@ -23,7 +23,7 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
     namePronunciation: user.namePronunciation || "",
     bio: user.bio || "",
     teamRole: user.teamRole || "",
-    themeColor: user.themeColor || "#6750A4",
+    themeColor: user.themeColor || "#03A9F4",
     image: user.image || "",
   });
 

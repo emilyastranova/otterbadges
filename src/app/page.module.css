@@ -10,6 +10,19 @@
   overflow: hidden; /* Prevent background from extending page */
 }
 
+.statLine {
+  margin-top: -1rem;
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.8;
+}
+
+.statLine strong {
+  color: var(--md-sys-color-primary);
+  font-weight: 700;
+}
+
 .main {
   position: relative;
   z-index: 2; /* Above the background */

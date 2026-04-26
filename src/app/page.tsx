@@ -6,10 +6,13 @@ import BackgroundGrid from "./BackgroundGrid";
 
 export default async function Home() {
   // Fetch a sample of badges to pass to the client for the background grid
-  const dbBadges = await prisma.badge.findMany({
-    take: 100,
-    select: { id: true, imageUrl: true, title: true, useSmooth: true },
-  });
+  const [dbBadges, totalCount] = await Promise.all([
+    prisma.badge.findMany({
+      take: 100,
+      select: { id: true, imageUrl: true, title: true, useSmooth: true },
+    }),
+    prisma.badge.count(),
+  ]);
 
   return (
     <div className={styles.container}>
@@ -18,8 +21,15 @@ export default async function Home() {
       <main className={styles.main}>
         <h1 className={styles.title}>Welcome to OtterBadges</h1>
         <p className={styles.description}>
-          Create, distribute, and collect digital achievement badges across your organization.
+          Create, distribute, and collect digital achievement badges across your team
         </p>
+        
+        {totalCount > 0 && (
+          <p className={styles.statLine}>
+            Discover the <strong>{totalCount.toLocaleString()}</strong> badges made so far!
+          </p>
+        )}
+
         <div className={styles.actions}>
           <Link href="/marketplace">
             <FilledButton>Explore Badges</FilledButton>

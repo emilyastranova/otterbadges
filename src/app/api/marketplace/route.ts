@@ -25,6 +25,7 @@ export async function GET(req: Request) {
       useSmooth: true,
       isPublic: true,
       ownerId: true,
+      imageSize: true,
       createdAt: true,
       updatedAt: true,
       owner: {

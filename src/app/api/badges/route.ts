@@ -22,9 +22,9 @@ export async function GET(req: Request) {
         useSmooth: true,
         isPublic: true,
         ownerId: true,
+        imageSize: true,
         createdAt: true,
         updatedAt: true,
-        // imageUrl is intentionally omitted to save bandwidth
       },
       orderBy: { createdAt: "desc" },
     });
@@ -48,6 +48,19 @@ export async function POST(req: Request) {
       return Res.json({ error: "Missing fields" }, { status: 400 });
     }
     
+    let imageSize = 0;
+    if (imageUrl.startsWith("data:")) {
+      const base64 = imageUrl.split(",")[1];
+      if (base64) {
+        let padding = 0;
+        if (base64.endsWith("==")) padding = 2;
+        else if (base64.endsWith("=")) padding = 1;
+        imageSize = Math.round((base64.length * 3) / 4) - padding;
+      }
+    } else {
+      imageSize = imageUrl.length;
+    }
+
     const slug = await generateUniqueBadgeSlug(title);
 
     const badge = await prisma.badge.create({
@@ -56,6 +69,7 @@ export async function POST(req: Request) {
         slug,
         description,
         imageUrl,
+        imageSize,
         externalUrl,
         useSmooth: useSmooth !== undefined ? !!useSmooth : true,
         isPublic: !!isPublic,

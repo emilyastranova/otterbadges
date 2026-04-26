@@ -11,7 +11,14 @@ export async function GET() {
 
   const badges = await prisma.badge.findMany({
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      imageSize: true,
+      useSmooth: true,
+      createdAt: true,
       owner: {
         select: { name: true, alias: true }
       },

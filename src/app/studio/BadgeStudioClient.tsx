@@ -6,11 +6,12 @@ import { Badge } from "@prisma/client";
 import styles from "./studio.module.css";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import Link from "next/link";
+import LazyBadge from "@/components/LazyBadge";
 
 import UserSelectorDialog from "./UserSelectorDialog";
 import BadgeRecipientManager from "./BadgeRecipientManager";
 
-export default function BadgeStudioClient({ initialBadges }: { initialBadges: Badge[] }) {
+export default function BadgeStudioClient({ initialBadges }: { initialBadges: any[] }) {
   const [badges, setBadges] = useState<Badge[]>(initialBadges);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -329,10 +330,27 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
         {filteredBadges.map((badge) => (
           <div key={badge.id} className={styles.badgeCard}>
             {editingId === badge.id ? (
-              <img src={editImageUrl ? editImageUrl : badge.imageUrl} alt={badge.title} width={40} height={40} />
+              <div style={{ width: "40px", height: "40px" }}>
+                {editImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={editImageUrl} alt={badge.title} width={40} height={40} />
+                ) : (
+                  <LazyBadge 
+                    badgeId={badge.id} 
+                    title={badge.title} 
+                    imageSize={(badge as any).imageSize} 
+                    useSmooth={(badge as any).useSmooth} 
+                  />
+                )}
+              </div>
             ) : (
-              <Link href={`/b/${badge.slug || badge.id}`}>
-                <img src={badge.imageUrl} alt={badge.title} width={40} height={40} style={{ cursor: "pointer" }} />
+              <Link href={`/b/${badge.slug || badge.id}`} style={{ width: "40px", height: "40px", display: "block" }}>
+                <LazyBadge 
+                  badgeId={badge.id} 
+                  title={badge.title} 
+                  imageSize={(badge as any).imageSize} 
+                  useSmooth={(badge as any).useSmooth} 
+                />
               </Link>
             )}
             <div style={{ flex: 1 }}>

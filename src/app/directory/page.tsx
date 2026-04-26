@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import styles from "./directory.module.css";
 import { Icon } from "@/components/MaterialUI";
+import LazyBadge from "@/components/LazyBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,16 @@ export default async function Directory() {
     include: {
       badges: {
         where: { isFavorite: true },
-        include: { badge: true },
+        include: { 
+          badge: {
+            select: {
+              id: true,
+              title: true,
+              imageSize: true,
+              useSmooth: true
+            }
+          } 
+        },
         take: 5,
       }
     }
@@ -26,6 +36,7 @@ export default async function Directory() {
           <Link key={user.id} href={`/u/${user.alias || user.id}`} className={styles.card}>
             <div className={styles.avatar}>
               {user.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={user.image} alt={user.name || "User"} />
               ) : (
                 <Icon>person</Icon>
@@ -38,7 +49,14 @@ export default async function Directory() {
               </div>
               <div className={styles.favoriteBadges}>
                 {user.badges.map((ub) => (
-                  <img key={ub.id} src={ub.badge.imageUrl} alt={ub.badge.title} title={ub.badge.title} />
+                  <div key={ub.id} className={styles.directoryBadgeWrapper}>
+                    <LazyBadge 
+                      badgeId={ub.badge.id}
+                      title={ub.badge.title}
+                      imageSize={ub.badge.imageSize}
+                      useSmooth={ub.badge.useSmooth}
+                    />
+                  </div>
                 ))}
               </div>
             </div>

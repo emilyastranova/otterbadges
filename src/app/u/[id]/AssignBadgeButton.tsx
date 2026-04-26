@@ -4,13 +4,14 @@ import { useState } from "react";
 import { FilledButton, Dialog, TextButton, List, ListItem } from "@/components/MaterialUI";
 import { Badge } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import LazyBadge from "@/components/LazyBadge";
 
 export default function AssignBadgeButton({
   targetUserId,
   ownedBadges,
 }: {
   targetUserId: string;
-  ownedBadges: Badge[];
+  ownedBadges: any[];
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -79,7 +80,14 @@ export default function AssignBadgeButton({
                   }}
                   onClick={() => handleAssign(badge.id)}
                 >
-                  <img src={badge.imageUrl} alt={badge.title} width={40} height={40} />
+                  <div style={{ width: "40px", height: "40px", flexShrink: 0 }}>
+                    <LazyBadge 
+                      badgeId={badge.id}
+                      title={badge.title}
+                      imageSize={badge.imageSize}
+                      useSmooth={badge.useSmooth}
+                    />
+                  </div>
                   <div>
                     <h3 style={{ margin: 0, fontSize: "1rem" }}>{badge.title}</h3>
                   </div>

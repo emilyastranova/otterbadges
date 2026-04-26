@@ -86,7 +86,23 @@ export async function PATCH(
       isPublic: isPublic !== undefined ? !!isPublic : badge.isPublic,
       useSmooth: useSmooth !== undefined ? !!useSmooth : badge.useSmooth
     };
-    if (imageUrl) data.imageUrl = imageUrl;
+    if (imageUrl) {
+      data.imageUrl = imageUrl;
+      
+      let imageSize = 0;
+      if (imageUrl.startsWith("data:")) {
+        const base64 = imageUrl.split(",")[1];
+        if (base64) {
+          let padding = 0;
+          if (base64.endsWith("==")) padding = 2;
+          else if (base64.endsWith("=")) padding = 1;
+          imageSize = Math.round((base64.length * 3) / 4) - padding;
+        }
+      } else {
+        imageSize = imageUrl.length;
+      }
+      data.imageSize = imageSize;
+    }
 
     const updated = await prisma.badge.update({
       where: { id },

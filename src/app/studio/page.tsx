@@ -13,6 +13,19 @@ export default async function BadgeStudio() {
 
   const createdBadges = await prisma.badge.findMany({
     where: { ownerId: session.user.id },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      externalUrl: true,
+      useSmooth: true,
+      isPublic: true,
+      ownerId: true,
+      imageSize: true,
+      createdAt: true,
+      updatedAt: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 

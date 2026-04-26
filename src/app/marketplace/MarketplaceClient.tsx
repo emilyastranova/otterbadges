@@ -6,6 +6,7 @@ import styles from "./marketplace.module.css";
 import { useSession } from "next-auth/react";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import Link from "next/link";
+import LazyBadge from "@/components/LazyBadge";
 
 export default function MarketplaceClient({ initialBadges }: { initialBadges: any[] }) {
   const [badges, setBadges] = useState(initialBadges);
@@ -77,8 +78,13 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
         {badges.map((badge) => (
           <div key={badge.id} className={styles.card}>
             <div className={styles.badgeHeader}>
-              <Link href={`/b/${badge.slug || badge.id}`}>
-                <img src={`/api/badges/${badge.id}/image`} alt={badge.title} width={40} height={40} style={{ cursor: "pointer" }} />
+              <Link href={`/b/${badge.slug || badge.id}`} style={{ width: "40px", height: "40px", display: "block" }}>
+                <LazyBadge 
+                  badgeId={badge.id}
+                  title={badge.title}
+                  imageSize={badge.imageSize}
+                  useSmooth={badge.useSmooth}
+                />
               </Link>
               <div className={styles.badgeMeta}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>

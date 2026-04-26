@@ -10,7 +10,13 @@ export default async function Marketplace() {
   
   const badges = await prisma.badge.findMany({
     where: { isPublic: true },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      imageSize: true,
+      useSmooth: true,
       owner: {
         select: { name: true }
       },

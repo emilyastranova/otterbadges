@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import styles from "./badge.module.css";
 import { Icon } from "@/components/MaterialUI";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import CollectBadgeButton from "./CollectBadgeButton";
+import LazyBadge from "@/components/LazyBadge";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -52,11 +52,12 @@ export default async function BadgePage({ params }: { params: Promise<{ slug: st
     <div className={styles.container}>
       <div className={styles.badgeHeader}>
         <div className={styles.imageContainer}>
-          <img 
-            src={badge.imageUrl} 
-            alt={badge.title} 
-            className={styles.badgeImage} 
-            style={{ imageRendering: badge.useSmooth ? "auto" : "pixelated" }}
+          <LazyBadge 
+            badgeId={badge.id}
+            title={badge.title}
+            imageSize={badge.imageSize}
+            useSmooth={badge.useSmooth}
+            className={styles.badgeImage}
           />
         </div>
         <div className={styles.badgeInfo}>
@@ -108,6 +109,7 @@ export default async function BadgePage({ params }: { params: Promise<{ slug: st
             {badge.users.map((ub) => (
               <Link key={ub.id} href={`/u/${ub.user.alias || ub.user.id}`} className={styles.collectorCard}>
                 {ub.user.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={ub.user.image} alt={ub.user.name || "User"} className={styles.collectorAvatar} />
                 ) : (
                   <div className={styles.avatarPlaceholder} style={{ backgroundColor: ub.user.themeColor || "var(--md-sys-color-primary)" }}>

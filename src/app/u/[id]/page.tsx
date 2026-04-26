@@ -34,6 +34,7 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
               useSmooth: true,
               isPublic: true,
               ownerId: true,
+              imageSize: true,
               createdAt: true,
               updatedAt: true
             }
@@ -67,6 +68,7 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
         useSmooth: true,
         isPublic: true,
         ownerId: true,
+        imageSize: true,
         createdAt: true,
         updatedAt: true
       }

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import AssignBadgeButton from "./AssignBadgeButton";
+import LazyBadge from "@/components/LazyBadge";
 
 interface BadgeGridProps {
   badges: any[];
@@ -142,7 +143,12 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
               <div key={i} className={styles.favoriteSlot}>
                 {favoriteBadges[i] ? (
                   <div className={styles.badgeCard} title={favoriteBadges[i].badge.description}>
-                    <img src={`/api/badges/${favoriteBadges[i].badgeId}/image`} alt={favoriteBadges[i].badge.title} />
+                    <LazyBadge 
+                      badgeId={favoriteBadges[i].badgeId}
+                      title={favoriteBadges[i].badge.title}
+                      imageSize={favoriteBadges[i].badge.imageSize}
+                      useSmooth={favoriteBadges[i].badge.useSmooth}
+                    />
                     <button 
                       className={styles.unfavoriteBtn}
                       onClick={() => toggleFavorite(favoriteBadges[i].badgeId, true)}
@@ -165,10 +171,15 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
             key={ub.id} 
             className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`} 
             title={ub.badge.description}
-            onClick={() => handleBadgeClick(ub.badge)}
             style={{ cursor: (!isEditing && ub.badge.externalUrl) ? "pointer" : "default" }}
           >
-            <img src={`/api/badges/${ub.badgeId}/image`} alt={ub.badge.title} />
+            <LazyBadge 
+              badgeId={ub.badgeId}
+              title={ub.badge.title}
+              imageSize={ub.badge.imageSize}
+              useSmooth={ub.badge.useSmooth}
+              onClick={() => handleBadgeClick(ub.badge)}
+            />
             {isOwnProfile && isEditing && (
               <>
                 <button 

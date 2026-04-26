@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FilledButton, OutlinedButton, Icon, List, ListItem, OutlinedTextField, IconButton } from "@/components/MaterialUI";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import UserSelectorDialog from "@/app/studio/UserSelectorDialog";
+import LazyBadge from "@/components/LazyBadge";
 import styles from "./admin.module.css";
 
 export default function AdminPage() {
@@ -172,8 +173,13 @@ export default function AdminPage() {
             <div className={styles.badgeList}>
               {badges.map(badge => (
                 <div key={badge.id} className={styles.adminCard}>
-                  <Link href={`/b/${badge.slug || badge.id}`} className={styles.link}>
-                    <img src={badge.imageUrl} alt={badge.title} className={styles.badgePreview} />
+                  <Link href={`/b/${badge.slug || badge.id}`} className={styles.link} style={{ width: "40px", height: "40px", display: "block", flexShrink: 0 }}>
+                    <LazyBadge 
+                      badgeId={badge.id} 
+                      title={badge.title} 
+                      imageSize={badge.imageSize} 
+                      useSmooth={badge.useSmooth} 
+                    />
                   </Link>
                   <div className={styles.cardInfo}>
                     <Link href={`/b/${badge.slug || badge.id}`} className={styles.link}>

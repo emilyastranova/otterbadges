@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "OtterBadges API",
-    "description": "API documentation for the OtterBadges digital badge platform. Integrate OtterBadges into your internal tools, Slack bots, and HR platforms.",
+    "description": "API documentation for the OtterBadges digital badge platform. Integrate OtterBadges into your internal tools like Slack and Discord bots.",
     "version": "1.0.0"
   },
   "servers": [

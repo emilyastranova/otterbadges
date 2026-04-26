@@ -2,6 +2,7 @@ import { NextResponse as Res } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateUniqueBadgeSlug } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -15,10 +16,13 @@ export async function POST(req: Request) {
     if (!title || !description || !imageUrl) {
       return Res.json({ error: "Missing fields" }, { status: 400 });
     }
+    
+    const slug = await generateUniqueBadgeSlug(title);
 
     const badge = await prisma.badge.create({
       data: {
         title,
+        slug,
         description,
         imageUrl,
         isPublic: !!isPublic,

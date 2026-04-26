@@ -16,3 +16,21 @@ export async function generateUniqueAlias(name: string): Promise<string> {
     counter++;
   }
 }
+
+export async function generateUniqueBadgeSlug(title: string): Promise<string> {
+  const base = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  let slug = base || "badge";
+  let counter = 1;
+
+  while (true) {
+    const existing = await prisma.badge.findUnique({
+      where: { slug },
+    });
+
+    if (!existing) return slug;
+
+    slug = `${base}-${counter}`;
+    counter++;
+  }
+}
+

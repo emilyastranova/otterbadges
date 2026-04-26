@@ -153,7 +153,8 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
             key={ub.id} 
             className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`} 
             title={ub.badge.description}
-            onClick={() => handleBadgeClick(ub.badge.description)}
+            onClick={() => handleBadgeClick(ub.badge.description, ub.badge.slug || ub.badge.id)}
+            style={{ cursor: isEditing ? "default" : "pointer" }}
           >
             <img src={ub.badge.imageUrl} alt={ub.badge.title} />
             {isOwnProfile && isEditing && (

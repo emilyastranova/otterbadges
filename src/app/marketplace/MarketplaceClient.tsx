@@ -5,6 +5,7 @@ import { Icon, OutlinedTextField, FilledButton, OutlinedButton } from "@/compone
 import styles from "./marketplace.module.css";
 import { useSession } from "next-auth/react";
 import FeedbackDialog from "@/components/FeedbackDialog";
+import Link from "next/link";
 
 export default function MarketplaceClient({ initialBadges }: { initialBadges: any[] }) {
   const [badges, setBadges] = useState(initialBadges);
@@ -76,10 +77,14 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
         {badges.map((badge) => (
           <div key={badge.id} className={styles.card}>
             <div className={styles.badgeHeader}>
-              <img src={badge.imageUrl} alt={badge.title} width={40} height={40} />
+              <Link href={`/b/${badge.slug || badge.id}`}>
+                <img src={badge.imageUrl} alt={badge.title} width={40} height={40} style={{ cursor: "pointer" }} />
+              </Link>
               <div className={styles.badgeMeta}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <h3>{badge.title}</h3>
+                  <Link href={`/b/${badge.slug || badge.id}`} style={{ textDecoration: "none" }}>
+                    <h3 style={{ cursor: "pointer" }}>{badge.title}</h3>
+                  </Link>
                   {badge.hasBadge && (
                     <span className={styles.collectedTag}>
                       <Icon style={{ fontSize: "14px" }}>check_circle</Icon>

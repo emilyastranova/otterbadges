@@ -18,6 +18,8 @@ export async function GET() {
       email: true,
       alias: true,
       role: true,
+      image: true,
+      themeColor: true,
       createdAt: true,
     },
   });

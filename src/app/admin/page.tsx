@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { FilledButton, OutlinedButton, Icon, List, ListItem, OutlinedTextField, IconButton } from "@/components/MaterialUI";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import UserSelectorDialog from "@/app/studio/UserSelectorDialog";
@@ -115,8 +116,19 @@ export default function AdminPage() {
             <div className={styles.userList}>
               {users.map(user => (
                 <div key={user.id} className={styles.adminCard}>
+                  <Link href={`/u/${user.alias || user.id}`} className={styles.link}>
+                    {user.image ? (
+                      <img src={user.image} alt={user.name} className={styles.adminAvatar} />
+                    ) : (
+                      <div className={styles.adminAvatar} style={{ backgroundColor: user.themeColor || "var(--md-sys-color-primary)" }}>
+                        {user.name?.charAt(0).toUpperCase() || "?"}
+                      </div>
+                    )}
+                  </Link>
                   <div className={styles.cardInfo}>
-                    <strong>{user.name}</strong> (@{user.alias})
+                    <Link href={`/u/${user.alias || user.id}`} className={styles.link}>
+                      <strong>{user.name}</strong> (@{user.alias})
+                    </Link>
                     <p>{user.email} • Joined {new Date(user.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className={styles.cardActions}>
@@ -160,11 +172,15 @@ export default function AdminPage() {
             <div className={styles.badgeList}>
               {badges.map(badge => (
                 <div key={badge.id} className={styles.adminCard}>
-                  <img src={badge.imageUrl} alt={badge.title} className={styles.badgePreview} />
+                  <Link href={`/b/${badge.slug || badge.id}`} className={styles.link}>
+                    <img src={badge.imageUrl} alt={badge.title} className={styles.badgePreview} />
+                  </Link>
                   <div className={styles.cardInfo}>
-                    <strong>{badge.title}</strong>
+                    <Link href={`/b/${badge.slug || badge.id}`} className={styles.link}>
+                      <strong>{badge.title}</strong>
+                    </Link>
                     <p>{badge.description}</p>
-                    <small>Owner: {badge.owner.name} (@{badge.owner.alias}) • Used by {badge._count.users} users</small>
+                    <small>Owner: <Link href={`/u/${badge.owner.alias || badge.ownerId}`} className={styles.link}>{badge.owner.name}</Link> (@{badge.owner.alias}) • Used by {badge._count.users} users</small>
                   </div>
                   <div className={styles.cardActions}>
                     <OutlinedButton onClick={() => {

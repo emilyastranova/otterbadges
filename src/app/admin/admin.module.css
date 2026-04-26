@@ -45,6 +45,30 @@
   transition: background-color 0.2s;
 }
 
+.adminAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--md-sys-color-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--md-sys-color-primary);
+}
+
 .adminCard:hover {
   background-color: var(--md-sys-color-surface-container-high);
 }

@@ -92,10 +92,17 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
   const otherBadges = badges.filter(b => !b.isFavorite);
   const sortedBadges = [...favoriteBadges, ...otherBadges];
 
-  const handleBadgeClick = (description: string) => {
+  const handleBadgeClick = (badge: any) => {
+    if (isEditing) return;
+
+    if (badge.externalUrl) {
+      window.open(badge.externalUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+
     // Only show the mobile description if we're on a touch device / small screen
     if (window.matchMedia("(max-width: 600px)").matches) {
-      setActiveBadgeDescription(description);
+      setActiveBadgeDescription(badge.description);
       // Auto-hide after 3 seconds
       setTimeout(() => setActiveBadgeDescription(null), 3000);
     }
@@ -153,8 +160,8 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
             key={ub.id} 
             className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`} 
             title={ub.badge.description}
-            onClick={() => handleBadgeClick(ub.badge.description, ub.badge.slug || ub.badge.id)}
-            style={{ cursor: isEditing ? "default" : "pointer" }}
+            onClick={() => handleBadgeClick(ub.badge)}
+            style={{ cursor: (!isEditing && ub.badge.externalUrl) ? "pointer" : "default" }}
           >
             <img src={ub.badge.imageUrl} alt={ub.badge.title} />
             {isOwnProfile && isEditing && (

@@ -48,7 +48,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const { title, description, isPublic, imageUrl, useSmooth } = await req.json();
+    const { title, description, isPublic, imageUrl, useSmooth, externalUrl } = await req.json();
 
     const badge = await prisma.badge.findUnique({
       where: { id },
@@ -61,6 +61,7 @@ export async function PATCH(
     const data: any = { 
       title, 
       description,
+      externalUrl,
       isPublic: isPublic !== undefined ? !!isPublic : badge.isPublic,
       useSmooth: useSmooth !== undefined ? !!useSmooth : badge.useSmooth
     };

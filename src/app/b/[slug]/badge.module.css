@@ -104,6 +104,29 @@
   margin: 0;
 }
 
+.externalLinkBox {
+  margin-top: 1rem;
+}
+
+.externalLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--md-sys-color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-primary);
+  transition: all 0.2s;
+}
+
+.externalLink:hover {
+  background-color: var(--md-sys-color-primary-container);
+  box-shadow: var(--md-sys-elevation-1);
+}
+
 .collectorsSection h2 {
   color: var(--md-sys-color-primary);
   margin-bottom: 1.5rem;

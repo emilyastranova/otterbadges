@@ -81,6 +81,15 @@ export default async function BadgePage({ params }: { params: Promise<{ slug: st
           <div className={styles.descriptionBox}>
             <p>{badge.description}</p>
           </div>
+
+          {badge.externalUrl && (
+            <div className={styles.externalLinkBox}>
+              <a href={badge.externalUrl} target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
+                <Icon style={{ fontSize: "18px" }}>open_in_new</Icon>
+                Visit Link
+              </a>
+            </div>
+          )}
           
           <CollectBadgeButton 
             badgeId={badge.id}

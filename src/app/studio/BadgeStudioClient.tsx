@@ -14,6 +14,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [badges, setBadges] = useState<Badge[]>(initialBadges);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [externalUrl, setExternalUrl] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [resizedImage, setResizedImage] = useState<string | null>(null);
@@ -23,6 +24,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
+  const [editExternalUrl, setEditExternalUrl] = useState("");
   const [editIsPublic, setEditIsPublic] = useState(false);
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -147,7 +149,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const res = await fetch("/api/badges", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, imageUrl, isPublic, useSmooth }),
+      body: JSON.stringify({ title, description, imageUrl, externalUrl, isPublic, useSmooth }),
     });
 
     if (res.ok) {
@@ -155,6 +157,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       setBadges([newBadge, ...badges]);
       setTitle("");
       setDescription("");
+      setExternalUrl("");
       setImageUrl("");
       setIsPublic(false);
       setOriginalImage(null);
@@ -187,6 +190,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setEditingId(badge.id);
     setEditTitle(badge.title);
     setEditDesc(badge.description);
+    setEditExternalUrl(badge.externalUrl || "");
     setEditIsPublic(badge.isPublic);
     setEditImageUrl(null);
     setEditRawSourceImage(null);
@@ -201,6 +205,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const body: any = { 
       title: editTitle, 
       description: editDesc, 
+      externalUrl: editExternalUrl,
       isPublic: editIsPublic,
       useSmooth: editUseSmooth
     };
@@ -253,6 +258,13 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
               value={description}
               onInput={(e: any) => setDescription(e.target.value)}
               style={{ width: "100%" }}
+            />
+            <OutlinedTextField
+              label="External Link (Optional URL)"
+              value={externalUrl}
+              onInput={(e: any) => setExternalUrl(e.target.value)}
+              style={{ width: "100%" }}
+              placeholder="https://example.com"
             />
             <div className={styles.fileUpload}>
               <label className={styles.fileLabel}>
@@ -335,6 +347,12 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                     label="Description" 
                     value={editDesc} 
                     onInput={(e: any) => setEditDesc(e.target.value)} 
+                  />
+                  <OutlinedTextField 
+                    label="External Link (Optional URL)" 
+                    value={editExternalUrl} 
+                    onInput={(e: any) => setEditExternalUrl(e.target.value)} 
+                    placeholder="https://example.com"
                   />
                   <div className={styles.fileUpload}>
                     <label className={styles.fileLabel}>

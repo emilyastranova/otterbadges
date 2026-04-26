@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FilledButton, OutlinedButton, Icon, List, ListItem, OutlinedTextField, IconButton } from "@/components/MaterialUI";
 import FeedbackDialog from "@/components/FeedbackDialog";
+import UserSelectorDialog from "@/app/studio/UserSelectorDialog";
 import styles from "./admin.module.css";
 
 export default function AdminPage() {
@@ -15,6 +16,7 @@ export default function AdminPage() {
   const [badges, setBadges] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialog, setDialog] = useState<any>({ open: false });
+  const [changingOwnerId, setChangingOwnerId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -177,6 +179,9 @@ export default function AdminPage() {
                     }}>
                       Edit Desc
                     </OutlinedButton>
+                    <OutlinedButton onClick={() => setChangingOwnerId(badge.id)}>
+                      Change Owner
+                    </OutlinedButton>
                     <IconButton onClick={() => handleDeleteBadge(badge.id)} style={{ color: "var(--md-sys-color-error)" }}>
                       <Icon>delete</Icon>
                     </IconButton>
@@ -187,6 +192,16 @@ export default function AdminPage() {
           </section>
         )}
       </main>
+
+      {changingOwnerId && (
+        <UserSelectorDialog 
+          onClose={() => setChangingOwnerId(null)}
+          onSelect={(userId) => {
+            handleUpdateBadge(changingOwnerId, { ownerId: userId });
+            setChangingOwnerId(null);
+          }}
+        />
+      )}
 
       <FeedbackDialog
         open={dialog.open}

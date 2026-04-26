@@ -47,11 +47,12 @@ export async function PATCH(req: Request) {
     return Res.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { badgeId, title, description } = await req.json();
+  const { badgeId, title, description, ownerId } = await req.json();
 
   const data: any = {};
   if (title !== undefined) data.title = title;
   if (description !== undefined) data.description = description;
+  if (ownerId !== undefined) data.ownerId = ownerId;
 
   const updated = await prisma.badge.update({
     where: { id: badgeId },

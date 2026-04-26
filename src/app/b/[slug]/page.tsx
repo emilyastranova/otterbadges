@@ -51,7 +51,12 @@ export default async function BadgePage({ params }: { params: Promise<{ slug: st
     <div className={styles.container}>
       <div className={styles.badgeHeader}>
         <div className={styles.imageContainer}>
-          <img src={badge.imageUrl} alt={badge.title} className={styles.badgeImage} />
+          <img 
+            src={badge.imageUrl} 
+            alt={badge.title} 
+            className={styles.badgeImage} 
+            style={{ imageRendering: badge.useSmooth ? "auto" : "pixelated" }}
+          />
         </div>
         <div className={styles.badgeInfo}>
           <div className={styles.titleRow}>

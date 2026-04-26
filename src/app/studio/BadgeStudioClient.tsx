@@ -146,7 +146,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     const res = await fetch("/api/badges", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, imageUrl, isPublic }),
+      body: JSON.stringify({ title, description, imageUrl, isPublic, useSmooth }),
     });
 
     if (res.ok) {
@@ -190,14 +190,19 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
     setEditImageUrl(null);
     setEditRawSourceImage(null);
     setEditIsAnimatedUpload(false);
-    setEditUseSmooth(true);
+    setEditUseSmooth(badge.useSmooth);
   };
 
   const handleUpdate = async () => {
     if (!editingId) return;
     setLoading(true);
 
-    const body: any = { title: editTitle, description: editDesc, isPublic: editIsPublic };
+    const body: any = { 
+      title: editTitle, 
+      description: editDesc, 
+      isPublic: editIsPublic,
+      useSmooth: editUseSmooth
+    };
     if (editImageUrl) body.imageUrl = editImageUrl;
 
     const res = await fetch(`/api/badges/${editingId}`, {
@@ -331,7 +336,7 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
                       <input type="file" accept="image/*" onChange={handleEditFileChange} hidden />
                     </label>
                   </div>
-                  {editRawSourceImage && !editIsAnimatedUpload && (
+                  {!editIsAnimatedUpload && (
                     <div className={styles.checkboxField}>
                       <Checkbox
                         checked={editUseSmooth}

@@ -387,7 +387,9 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
               ) : (
                 <>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <h3>{badge.title}</h3>
+                    <Link href={`/b/${badge.slug || badge.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                      <h3 style={{ cursor: "pointer" }}>{badge.title}</h3>
+                    </Link>
                     {badge.isPublic && (
                       <span className={styles.publicBadgeTag}>
                         <Icon style={{ fontSize: "14px" }}>store</Icon>

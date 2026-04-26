@@ -89,9 +89,13 @@ export default async function BadgePage({ params }: { params: Promise<{ slug: st
           <div className={styles.collectorsGrid}>
             {badge.users.map((ub) => (
               <Link key={ub.id} href={`/u/${ub.user.alias || ub.user.id}`} className={styles.collectorCard}>
-                <div className={styles.avatarPlaceholder} style={{ backgroundColor: ub.user.themeColor || "var(--md-sys-color-primary)" }}>
-                  {ub.user.name?.charAt(0).toUpperCase() || "?"}
-                </div>
+                {ub.user.image ? (
+                  <img src={ub.user.image} alt={ub.user.name || "User"} className={styles.collectorAvatar} />
+                ) : (
+                  <div className={styles.avatarPlaceholder} style={{ backgroundColor: ub.user.themeColor || "var(--md-sys-color-primary)" }}>
+                    {ub.user.name?.charAt(0).toUpperCase() || "?"}
+                  </div>
+                )}
                 <div className={styles.collectorInfo}>
                   <span className={styles.collectorName}>{ub.user.name}</span>
                   <span className={styles.collectedDate}>

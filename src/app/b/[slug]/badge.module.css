@@ -143,6 +143,15 @@
   color: white;
   font-weight: 500;
   font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.collectorAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .collectorInfo {

@@ -16,25 +16,38 @@ export default function BackgroundGrid({ initialBadges }: { initialBadges: Badge
   const [displayRows, setDisplayRows] = useState<Badge[][]>([]);
 
   useEffect(() => {
-    // Shuffle badges on the client side to ensure a different order every time
-    const shuffledBadges = [...initialBadges].sort(() => Math.random() - 0.5);
-
-    // Ensure we have enough badges to cover the screen
-    const minBadges = 200;
-    let pool = [...shuffledBadges];
-    if (pool.length > 0) {
-      while (pool.length < minBadges) {
-        pool = [...pool, ...shuffledBadges];
-      }
-    }
+    if (!initialBadges || initialBadges.length === 0) return;
 
     const rowCount = 10;
-    const rows: Badge[][] = Array.from({ length: rowCount }, () => []);
-    pool.forEach((badge, i) => {
-      rows[i % rowCount].push(badge);
-    });
+    const itemsPerRow = 30; // Enough badges to safely cover ultra-wide screens before repeating
+    const newRows: Badge[][] = [];
 
-    setDisplayRows(rows);
+    for (let i = 0; i < rowCount; i++) {
+      const rowBadges: Badge[] = [];
+      
+      while (rowBadges.length < itemsPerRow) {
+        const shuffled = [...initialBadges].sort(() => Math.random() - 0.5);
+        
+        for (const badge of shuffled) {
+          if (rowBadges.length === itemsPerRow) break;
+
+          // Prevent identical badges from being adjacent
+          const prevBadge = rowBadges.length > 0 ? rowBadges[rowBadges.length - 1] : null;
+          const isAdjacent = prevBadge?.id === badge.id;
+          
+          // Prevent identical badges at the loop seam (last item touching first item)
+          const isSeamConflict = rowBadges.length === itemsPerRow - 1 && rowBadges[0]?.id === badge.id;
+
+          // If there's only 1 badge in the entire DB, we have to allow adjacent duplicates
+          if (initialBadges.length === 1 || (!isAdjacent && !isSeamConflict)) {
+            rowBadges.push(badge);
+          }
+        }
+      }
+      newRows.push(rowBadges);
+    }
+
+    setDisplayRows(newRows);
     setMounted(true);
   }, [initialBadges]);
 

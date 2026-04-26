@@ -5,6 +5,7 @@ import { FilledButton, OutlinedTextField, Icon, TextButton, Checkbox } from "@/c
 import { Badge } from "@prisma/client";
 import styles from "./studio.module.css";
 import FeedbackDialog from "@/components/FeedbackDialog";
+import Link from "next/link";
 
 import UserSelectorDialog from "./UserSelectorDialog";
 import BadgeRecipientManager from "./BadgeRecipientManager";
@@ -315,7 +316,13 @@ export default function BadgeStudioClient({ initialBadges }: { initialBadges: Ba
       <div className={styles.grid}>
         {filteredBadges.map((badge) => (
           <div key={badge.id} className={styles.badgeCard}>
-            <img src={editingId === badge.id && editImageUrl ? editImageUrl : badge.imageUrl} alt={badge.title} width={40} height={40} />
+            {editingId === badge.id ? (
+              <img src={editImageUrl ? editImageUrl : badge.imageUrl} alt={badge.title} width={40} height={40} />
+            ) : (
+              <Link href={`/b/${badge.slug || badge.id}`}>
+                <img src={badge.imageUrl} alt={badge.title} width={40} height={40} style={{ cursor: "pointer" }} />
+              </Link>
+            )}
             <div style={{ flex: 1 }}>
               {editingId === badge.id ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>

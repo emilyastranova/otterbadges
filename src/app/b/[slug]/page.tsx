@@ -6,6 +6,7 @@ import styles from "./badge.module.css";
 import { Icon } from "@/components/MaterialUI";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import CollectBadgeButton from "./CollectBadgeButton";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -80,6 +81,14 @@ export default async function BadgePage({ params }: { params: Promise<{ slug: st
           <div className={styles.descriptionBox}>
             <p>{badge.description}</p>
           </div>
+          
+          <CollectBadgeButton 
+            badgeId={badge.id}
+            isPublic={badge.isPublic}
+            hasCollected={hasCollected}
+            isLoggedIn={!!session}
+            userId={session?.user?.id}
+          />
         </div>
       </div>
 

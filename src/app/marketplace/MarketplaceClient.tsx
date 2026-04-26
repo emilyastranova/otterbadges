@@ -74,7 +74,7 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
 
       <div className={styles.grid}>
         {badges.map((badge) => (
-          <div key={badge.id} className={`${styles.card} ${badge.hasBadge ? styles.cardCollected : ""}`}>
+          <div key={badge.id} className={styles.card}>
             <div className={styles.badgeHeader}>
               <img src={badge.imageUrl} alt={badge.title} width={40} height={40} />
               <div className={styles.badgeMeta}>

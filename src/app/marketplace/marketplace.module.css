@@ -52,13 +52,6 @@
   margin-top: 0.5rem;
 }
 
-.cardCollected {
-  opacity: 0.6;
-  filter: grayscale(0.5);
-  background-color: var(--md-sys-color-surface-container-low);
-  border-style: dashed;
-}
-
 .collectedTag {
   display: flex;
   align-items: center;

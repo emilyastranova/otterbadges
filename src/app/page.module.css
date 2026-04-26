@@ -1,4 +1,5 @@
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6,24 +7,110 @@
   min-height: calc(100vh - 80px); /* Adjust for navbar height */
   padding: 2rem;
   text-align: center;
+  overflow: hidden; /* Prevent background from extending page */
 }
 
+/* Background animation styles */
+.backgroundWrapper {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scrollingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  transform: rotate(-15deg);
+  opacity: 0.2; /* Dim the badges so text is readable */
+}
+
+.scrollingRow {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  will-change: transform;
+}
+
+.bgBadge {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s;
+}
+
+.scrollLeft {
+  animation: scrollLeft linear infinite;
+}
+
+.scrollRight {
+  animation: scrollRight linear infinite;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } 
+}
+
+@keyframes scrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 20%, var(--md-sys-color-background) 80%);
+  pointer-events: none;
+  z-index: 1;
+}
+/* end background animation styles */
+
 .main {
+  position: relative;
+  z-index: 2; /* Above the background */
   max-width: 800px;
+  background-color: var(--md-sys-color-surface);
+  padding: 4rem 3rem;
+  border-radius: 2rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 2.5rem 1.5rem;
+  }
+  .title {
+    font-size: 2.2rem !important;
+  }
 }
 
 .title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
   color: var(--md-sys-color-primary);
+  line-height: 1.2;
 }
 
 .description {
   font-size: 1.25rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   color: var(--md-sys-color-on-surface);
-  opacity: 0.8;
+  line-height: 1.6;
+  opacity: 0.85;
 }
 
 .actions {

@@ -3,7 +3,7 @@
 import { Icon } from "@/components/MaterialUI";
 import styles from "./profile.module.css";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import AssignBadgeButton from "./AssignBadgeButton";
 
@@ -18,7 +18,8 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
   const router = useRouter();
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [favoritingId, setFavoritingId] = useState<string | null>(null);
-  const [activeBadgeDescription, setActiveBadgeDescription] = useState<string | null>(null);
+  const [activeBadgeInfo, setActiveBadgeInfo] = useState<any | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [dialog, setDialog] = useState<{
     open: boolean;
@@ -95,16 +96,20 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
   const handleBadgeClick = (badge: any) => {
     if (isEditing) return;
 
-    if (badge.externalUrl) {
-      window.open(badge.externalUrl, "_blank", "noopener,noreferrer");
+    // Detect if we're on a touch device / small screen
+    const isMobile = window.matchMedia("(max-width: 600px)").matches || window.matchMedia("(hover: none)").matches;
+
+    if (isMobile) {
+      setActiveBadgeInfo(badge);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      // Give them 5 seconds to read and potentially click the link
+      timeoutRef.current = setTimeout(() => setActiveBadgeInfo(null), 5000);
       return;
     }
 
-    // Only show the mobile description if we're on a touch device / small screen
-    if (window.matchMedia("(max-width: 600px)").matches) {
-      setActiveBadgeDescription(badge.description);
-      // Auto-hide after 3 seconds
-      setTimeout(() => setActiveBadgeDescription(null), 3000);
+    // On desktop, immediately open the link if available
+    if (badge.externalUrl) {
+      window.open(badge.externalUrl, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -189,9 +194,20 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
         {badges.length === 0 && <p>No badges earned yet.</p>}
       </div>
 
-      {activeBadgeDescription && (
+      {activeBadgeInfo && (
         <div className={styles.mobileDescriptionBubble}>
-          {activeBadgeDescription}
+          <p className={styles.bubbleDesc}>{activeBadgeInfo.description}</p>
+          {activeBadgeInfo.externalUrl && (
+            <a 
+              href={activeBadgeInfo.externalUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={styles.bubbleLink}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Visit Link
+            </a>
+          )}
         </div>
       )}
 

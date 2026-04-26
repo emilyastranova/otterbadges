@@ -3,6 +3,27 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const badge = await prisma.badge.findUnique({
+      where: { id },
+    });
+
+    if (!badge) {
+      return Res.json({ error: "Badge not found" }, { status: 404 });
+    }
+
+    return Res.json(badge);
+  } catch (error) {
+    return Res.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> }

@@ -23,7 +23,22 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
     },
     include: {
       badges: {
-        include: { badge: true },
+        include: { 
+          badge: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              description: true,
+              externalUrl: true,
+              useSmooth: true,
+              isPublic: true,
+              ownerId: true,
+              createdAt: true,
+              updatedAt: true
+            }
+          } 
+        },
       },
     },
   });
@@ -43,6 +58,18 @@ export default async function UserProfile({ params }: { params: Promise<{ id: st
   if (session?.user) {
     ownedBadges = await prisma.badge.findMany({
       where: { ownerId: session.user.id },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        externalUrl: true,
+        useSmooth: true,
+        isPublic: true,
+        ownerId: true,
+        createdAt: true,
+        updatedAt: true
+      }
     });
   }
 

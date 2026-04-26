@@ -4,6 +4,37 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateUniqueBadgeSlug } from "@/lib/utils";
 
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return Res.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const badges = await prisma.badge.findMany({
+      where: { ownerId: session.user.id },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        externalUrl: true,
+        useSmooth: true,
+        isPublic: true,
+        ownerId: true,
+        createdAt: true,
+        updatedAt: true,
+        // imageUrl is intentionally omitted to save bandwidth
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return Res.json(badges);
+  } catch (error) {
+    return Res.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);

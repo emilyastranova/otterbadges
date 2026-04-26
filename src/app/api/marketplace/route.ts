@@ -16,7 +16,17 @@ export async function GET(req: Request) {
         { description: { contains: q } },
       ],
     },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      externalUrl: true,
+      useSmooth: true,
+      isPublic: true,
+      ownerId: true,
+      createdAt: true,
+      updatedAt: true,
       owner: {
         select: { name: true }
       },

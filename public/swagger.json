@@ -1,0 +1,278 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OtterBadges API",
+    "description": "API documentation for the OtterBadges digital badge platform. Integrate OtterBadges into your internal tools, Slack bots, and HR platforms.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current Environment"
+    }
+  ],
+  "security": [
+    {
+      "cookieAuth": []
+    }
+  ],
+  "paths": {
+    "/api/badges": {
+      "get": {
+        "summary": "List Badges",
+        "description": "Returns a list of badges created by the authenticated user. Note: imageUrl is omitted from this list to save bandwidth.",
+        "tags": ["Badges"],
+        "responses": {
+          "200": {
+            "description": "A list of badges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/BadgeSummary" }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/UnauthorizedError" }
+        }
+      },
+      "post": {
+        "summary": "Create Badge",
+        "description": "Creates a new badge.",
+        "tags": ["Badges"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "description", "imageUrl"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "imageUrl": { "type": "string" },
+                  "externalUrl": { "type": "string" },
+                  "isPublic": { "type": "boolean", "default": false },
+                  "useSmooth": { "type": "boolean", "default": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created badge",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Badge" }
+              }
+            }
+          },
+          "400": { "description": "Missing fields" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/badges/{id}": {
+      "get": {
+        "summary": "Get Badge Details",
+        "description": "Returns full details for a specific badge, including the base64 imageUrl.",
+        "tags": ["Badges"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the badge",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The full badge object",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Badge" }
+              }
+            }
+          },
+          "404": { "description": "Badge not found" }
+        }
+      }
+    },
+    "/api/assign": {
+      "post": {
+        "summary": "Assign Badge",
+        "description": "Assigns a badge to a specific user.",
+        "tags": ["Assignments"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["targetUserId", "badgeId"],
+                "properties": {
+                  "targetUserId": { "type": "string" },
+                  "badgeId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successful assignment" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/marketplace": {
+      "get": {
+        "summary": "Marketplace Badges",
+        "description": "Retrieves public badges available in the marketplace. Note: imageUrl is omitted from this list to save bandwidth.",
+        "tags": ["Marketplace"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Search query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of public badges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/BadgeSummary" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/badges/{id}/image": {
+      "get": {
+        "summary": "Get Badge Image",
+        "description": "Returns the badge image directly as binary data with appropriate Content-Type.",
+        "tags": ["Badges"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the badge",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The binary image data",
+            "content": {
+              "image/*": {
+                "schema": { "type": "string", "format": "binary" }
+              }
+            }
+          },
+          "404": { "description": "Badge or image not found" }
+        }
+      }
+    },
+    "/api/users/profile": {
+      "get": {
+        "summary": "Get Profile",
+        "description": "Retrieves the currently authenticated user's profile.",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "User profile data",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/UnauthorizedError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "next-auth.session-token"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "BadgeSummary": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "description": { "type": "string" },
+          "externalUrl": { "type": "string", "nullable": true },
+          "useSmooth": { "type": "boolean" },
+          "isPublic": { "type": "boolean" },
+          "ownerId": { "type": "string" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" }
+        }
+      },
+      "Badge": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "description": { "type": "string" },
+          "imageUrl": { "type": "string" },
+          "externalUrl": { "type": "string", "nullable": true },
+          "useSmooth": { "type": "boolean" },
+          "isPublic": { "type": "boolean" },
+          "ownerId": { "type": "string" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string", "nullable": true },
+          "email": { "type": "string", "nullable": true },
+          "alias": { "type": "string", "nullable": true },
+          "bio": { "type": "string", "nullable": true },
+          "image": { "type": "string", "nullable": true },
+          "teamRole": { "type": "string", "nullable": true },
+          "themeColor": { "type": "string", "nullable": true },
+          "role": { "type": "string" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -73,7 +73,7 @@ export default function BackgroundGrid({ initialBadges }: { initialBadges: Badge
                     style={{ animationDelay: `${popInDelay}s` }}
                   >
                     <Image
-                      src={badge.imageUrl}
+                      src={`/api/badges/${badge.id}/image`}
                       alt=""
                       width={80}
                       height={80}

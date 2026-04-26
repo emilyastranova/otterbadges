@@ -142,7 +142,7 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
               <div key={i} className={styles.favoriteSlot}>
                 {favoriteBadges[i] ? (
                   <div className={styles.badgeCard} title={favoriteBadges[i].badge.description}>
-                    <img src={favoriteBadges[i].badge.imageUrl} alt={favoriteBadges[i].badge.title} />
+                    <img src={`/api/badges/${favoriteBadges[i].badgeId}/image`} alt={favoriteBadges[i].badge.title} />
                     <button 
                       className={styles.unfavoriteBtn}
                       onClick={() => toggleFavorite(favoriteBadges[i].badgeId, true)}
@@ -168,7 +168,7 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
             onClick={() => handleBadgeClick(ub.badge)}
             style={{ cursor: (!isEditing && ub.badge.externalUrl) ? "pointer" : "default" }}
           >
-            <img src={ub.badge.imageUrl} alt={ub.badge.title} />
+            <img src={`/api/badges/${ub.badgeId}/image`} alt={ub.badge.title} />
             {isOwnProfile && isEditing && (
               <>
                 <button 

@@ -9,7 +9,7 @@ export default async function Home() {
   const [dbBadges, totalCount] = await Promise.all([
     prisma.badge.findMany({
       take: 100,
-      select: { id: true, imageUrl: true, title: true, useSmooth: true },
+      select: { id: true, title: true, useSmooth: true },
     }),
     prisma.badge.count(),
   ]);

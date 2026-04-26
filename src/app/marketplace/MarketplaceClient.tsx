@@ -78,7 +78,7 @@ export default function MarketplaceClient({ initialBadges }: { initialBadges: an
           <div key={badge.id} className={styles.card}>
             <div className={styles.badgeHeader}>
               <Link href={`/b/${badge.slug || badge.id}`}>
-                <img src={badge.imageUrl} alt={badge.title} width={40} height={40} style={{ cursor: "pointer" }} />
+                <img src={`/api/badges/${badge.id}/image`} alt={badge.title} width={40} height={40} style={{ cursor: "pointer" }} />
               </Link>
               <div className={styles.badgeMeta}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>

@@ -92,7 +92,7 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
   if (isEditing) {
     return (
       <div className={styles.editForm}>
-        <div style={{ display: "flex", gap: "2rem", marginBottom: "2rem" }}>
+        <div className={styles.editFormLayout}>
           <div className={styles.avatarEdit}>
             {formData.image ? (
               <img src={formData.image} alt="Avatar" />
@@ -109,8 +109,8 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
               </button>
             )}
           </div>
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div style={{ display: "flex", gap: "1rem" }}>
+          <div className={styles.editFormFields}>
+            <div className={styles.editFormRow}>
               <OutlinedTextField
                 label="Name"
                 value={formData.name}
@@ -132,7 +132,7 @@ export default function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps
                 style={{ width: "150px" }}
               />
             </div>
-            <div style={{ display: "flex", gap: "1rem" }}>
+            <div className={styles.editFormRow}>
               <OutlinedTextField
                 label="Name Pronunciation"
                 value={formData.namePronunciation}

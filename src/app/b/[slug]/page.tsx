@@ -19,7 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const appName = process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges";
   const title = `${badge.title} - ${appName}`;
   const description = badge.description || `A badge on ${appName}`;
-  const imageUrl = `/api/badges/${badge.id}/image`;
+  
+  // Use the stored imageUrl directly if it's external, otherwise use the proxy route
+  const imageUrl = badge.imageUrl.startsWith("http") 
+    ? badge.imageUrl 
+    : `/api/badges/${badge.id}/image`;
 
   return {
     title,

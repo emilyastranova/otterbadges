@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProviders } from "@/components/ThemeProvider";
 import NextAuthSessionProvider from "@/components/SessionProvider";
 import { NavBar } from "@/components/NavBar";
+import { getBaseUrl } from "@/lib/utils";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -12,6 +13,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getBaseUrl()),
   title: process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges",
   description: "A digital badge achievement system",
 };

@@ -1,5 +1,14 @@
 import { prisma } from "./prisma";
 
+export function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
+  if (process.env.NEXTAUTH_URL && !process.env.NEXTAUTH_URL.includes("localhost")) {
+    return process.env.NEXTAUTH_URL;
+  }
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3000";
+}
+
 export async function generateUniqueAlias(name: string): Promise<string> {
   const base = name.toLowerCase().replace(/\s+/g, "");
   let alias = base;

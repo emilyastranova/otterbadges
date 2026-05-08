@@ -54,6 +54,29 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    setDialog({
+      open: true,
+      title: "Delete User",
+      message: `Are you sure you want to delete ${userName}? This cannot be undone.`,
+      type: "confirm",
+      onConfirm: async () => {
+        setDialog({ open: false });
+        const res = await fetch("/api/admin/users", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        });
+        if (res.ok) {
+          fetchData();
+        } else {
+          const data = await res.json();
+          setDialog({ open: true, title: "Error", message: data.error || "Failed to delete user", type: "error" });
+        }
+      }
+    });
+  };
+
   const handleUpdateBadge = async (badgeId: string, updates: any) => {
     const res = await fetch("/api/admin/badges", {
       method: "PATCH",
@@ -162,6 +185,9 @@ export default function AdminPage() {
                     }}>
                       Reset Password
                     </OutlinedButton>
+                    <IconButton onClick={() => handleDeleteUser(user.id, user.name || "this user")} style={{ color: "var(--md-sys-color-error)" }}>
+                      <Icon>delete</Icon>
+                    </IconButton>
                   </div>
                 </div>
               ))}

@@ -29,8 +29,19 @@ export default function RootLayout({
       <body className={`${roboto.variable} ${roboto.className}`} suppressHydrationWarning>
         <NextAuthSessionProvider>
           <ThemeProviders>
-            <NavBar />
-            <main>{children}</main>
+            <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+              <NavBar />
+              <main style={{ flex: 1, display: "flex", flexDirection: "column" }}>{children}</main>
+              <footer style={{
+                textAlign: "center",
+                padding: "2rem",
+                color: "var(--md-sys-color-outline)",
+                fontSize: "0.875rem",
+                marginTop: "auto"
+              }}>
+                Created with love by Up-A-Creek Robotics - FRC Team 1619 &hearts;
+              </footer>
+            </div>
           </ThemeProviders>
         </NextAuthSessionProvider>
       </body>

@@ -66,7 +66,7 @@ export default function Login() {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "calc(100vh - 80px)" }}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flex: 1, padding: "2rem 0" }}>
       <div style={{ 
         width: "100%", 
         maxWidth: "400px", 

@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  min-height: calc(100vh - 80px - 4rem); /* Adjust for navbar and footer */
   padding: 2rem;
   text-align: center;
   overflow: hidden; /* Prevent background from extending page */

@@ -5,7 +5,9 @@ import { signIn, getProviders } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilledButton, OutlinedTextField, Icon } from "@/components/MaterialUI";
 
-export default function Login() {
+import { Suspense } from "react";
+
+function LoginForm() {
   const [isSignup, setIsSignup] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -142,5 +144,13 @@ export default function Login() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", alignItems: "center", flex: 1 }}>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

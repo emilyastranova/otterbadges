@@ -69,6 +69,14 @@ GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 NEXTAUTH_SECRET="your-secret-here"
 NEXTAUTH_URL="http://localhost:3000"
+
+# Application Branding
+NEXT_PUBLIC_APP_NAME="OtterBadges"
+
+# Authentication Toggles
+NEXT_PUBLIC_DISABLE_SIGNUP="false"       # Set to "true" to disable new user signups via email/password
+NEXT_PUBLIC_DISABLE_LOCAL_LOGIN="false"  # Set to "true" to disable email/password login entirely (useful if you only want Google OAuth)
+NEXT_PUBLIC_AUTO_SSO="false"             # Set to "true" to automatically redirect users to Google SSO when they land on the login page
 ```
 
 ### Google OAuth Setup (Optional)

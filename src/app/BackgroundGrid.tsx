@@ -6,7 +6,7 @@ import styles from "./BackgroundGrid.module.css";
 
 interface Badge {
   id: string;
-  imageUrl: string;
+  imageSize: number;
   title: string;
   useSmooth: boolean;
 }

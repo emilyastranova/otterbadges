@@ -71,6 +71,23 @@ NEXTAUTH_SECRET="your-secret-here"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
+### Google OAuth Setup (Optional)
+
+To enable the "Sign in with Google" button, you need to set up OAuth credentials in the Google Cloud Console:
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project or select an existing one.
+3. Navigate to **APIs & Services** > **Credentials**.
+4. Click **Create Credentials** > **OAuth client ID**.
+5. Select **Web application** as the application type.
+6. Under **Authorized redirect URIs**, add exactly:
+   ```
+   http://localhost:3000/api/auth/callback/google
+   ```
+   *(Note: For production, replace `http://localhost:3000` with your actual domain).*
+7. Copy the generated **Client ID** and **Client Secret**.
+8. Paste them into your `.env` file as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+
 ## Project Structure
 
 ```

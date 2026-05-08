@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, getProviders } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FilledButton, OutlinedTextField, Icon } from "@/components/MaterialUI";
 
@@ -11,7 +11,12 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [providers, setProviders] = useState<any>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    getProviders().then(setProviders);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,16 +108,18 @@ export default function Login() {
           </button>
         </div>
 
-        <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", color: "var(--md-sys-color-outline)" }}>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "currentColor" }}></div>
-            <span>OR</span>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "currentColor" }}></div>
+        {providers?.google && (
+          <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem", color: "var(--md-sys-color-outline)" }}>
+              <div style={{ flex: 1, height: "1px", backgroundColor: "currentColor" }}></div>
+              <span>OR</span>
+              <div style={{ flex: 1, height: "1px", backgroundColor: "currentColor" }}></div>
+            </div>
+            <FilledButton onClick={handleGoogle} style={{ width: "100%", backgroundColor: "#DB4437", color: "white" }}>
+              Sign in with Google
+            </FilledButton>
           </div>
-          <FilledButton onClick={handleGoogle} style={{ width: "100%", backgroundColor: "#DB4437", color: "white" }}>
-            Sign in with Google
-          </FilledButton>
-        </div>
+        )}
       </div>
     </div>
   );

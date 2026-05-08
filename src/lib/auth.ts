@@ -7,10 +7,14 @@ import { generateUniqueAlias } from "./utils";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -44,17 +48,56 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      // If it's a google sign in, we want to ensure the user exists in our DB
+      if (account?.provider === "google") {
+        if (!user.email) return false;
+        
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email }
+        });
+        
+        if (!existingUser) {
+          const newAlias = await generateUniqueAlias(user.name || "User");
+          await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              role: "USER",
+              alias: newAlias,
+            }
+          });
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       // Clear large fields that might have leaked from providers or previous sessions
       if (token.picture) delete token.picture;
       if (token.image) delete token.image;
 
-      if (user) {
-        token.id = user.id;
-        token.alias = (user as any).alias;
-        token.role = (user as any).role;
-        token.email = user.email;
-        token.name = user.name;
+      if (account && user) {
+        if (account.provider === 'google') {
+          // Look up our DB user to get the real UUID, not Google's ID
+          const dbUser = await prisma.user.findUnique({
+            where: { email: user.email as string }
+          });
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.alias = dbUser.alias;
+            token.role = dbUser.role;
+            token.email = dbUser.email;
+            token.name = dbUser.name;
+          }
+        } else {
+          // Credentials login already returned the DB user
+          token.id = user.id;
+          token.alias = (user as any).alias;
+          token.role = (user as any).role;
+          token.email = user.email;
+          token.name = user.name;
+        }
       } else if (token.id) {
         // Refresh alias and role from DB occasionally
         const dbUser = await prisma.user.findUnique({

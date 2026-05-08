@@ -4,6 +4,8 @@ import { FilledButton } from "@/components/MaterialUI";
 import { prisma } from "@/lib/prisma";
 import BackgroundGrid from "./BackgroundGrid";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Fetch a sample of badges to pass to the client for the background grid
   const [dbBadges, totalCount] = await Promise.all([

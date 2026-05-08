@@ -33,7 +33,7 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
     title: "",
     message: "",
     type: "alert",
-    onConfirm: () => {},
+    onConfirm: () => { },
   });
 
   const handleRevoke = (badgeId: string) => {
@@ -118,10 +118,10 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
     <div className={styles.badgesSection}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
         <h2 style={{ margin: 0 }}>
-          {isEditing ? "Manage Your Badges" : "Earned Badges"}
+          {isEditing ? "Manage Your Badges" : "Badges"}
         </h2>
         {isOwnProfile && badges.length > 0 && (
-          <button 
+          <button
             className={isEditing ? styles.editBadgesBtnActive : styles.editBadgesBtn}
             onClick={() => setIsEditing(!isEditing)}
           >
@@ -143,13 +143,13 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
               <div key={i} className={styles.favoriteSlot}>
                 {favoriteBadges[i] ? (
                   <div className={styles.badgeCard} title={favoriteBadges[i].badge.description}>
-                    <LazyBadge 
+                    <LazyBadge
                       badgeId={favoriteBadges[i].badgeId}
                       title={favoriteBadges[i].badge.title}
                       imageSize={favoriteBadges[i].badge.imageSize}
                       useSmooth={favoriteBadges[i].badge.useSmooth}
                     />
-                    <button 
+                    <button
                       className={styles.unfavoriteBtn}
                       onClick={() => toggleFavorite(favoriteBadges[i].badgeId, true)}
                     >
@@ -167,13 +167,13 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
 
       <div className={styles.badgeGrid}>
         {sortedBadges.map((ub) => (
-          <div 
-            key={ub.id} 
-            className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`} 
+          <div
+            key={ub.id}
+            className={`${styles.badgeCard} ${isEditing ? styles.badgeCardEditing : ""}`}
             title={ub.badge.description}
             style={{ cursor: (!isEditing && ub.badge.externalUrl) ? "pointer" : "default" }}
           >
-            <LazyBadge 
+            <LazyBadge
               badgeId={ub.badgeId}
               title={ub.badge.title}
               imageSize={ub.badge.imageSize}
@@ -182,16 +182,16 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
             />
             {isOwnProfile && isEditing && (
               <>
-                <button 
-                  className={styles.revokeBadgeBtnVisible} 
+                <button
+                  className={styles.revokeBadgeBtnVisible}
                   onClick={(e) => { e.stopPropagation(); handleRevoke(ub.badgeId); }}
                   disabled={revokingId === ub.badgeId}
                   title="Remove this badge"
                 >
                   <Icon style={{ fontSize: "16px" }}>close</Icon>
                 </button>
-                <button 
-                  className={ub.isFavorite ? styles.favoriteBtnActive : styles.favoriteBtn} 
+                <button
+                  className={ub.isFavorite ? styles.favoriteBtnActive : styles.favoriteBtn}
                   onClick={(e) => { e.stopPropagation(); toggleFavorite(ub.badgeId, ub.isFavorite); }}
                   disabled={favoritingId === ub.badgeId}
                   title={ub.isFavorite ? "Unfavorite" : "Make Favorite"}
@@ -209,10 +209,10 @@ export default function BadgeGrid({ badges, isOwnProfile, targetUserId, ownedBad
         <div className={styles.mobileDescriptionBubble}>
           <p className={styles.bubbleDesc}>{activeBadgeInfo.description}</p>
           {activeBadgeInfo.externalUrl && (
-            <a 
-              href={activeBadgeInfo.externalUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={activeBadgeInfo.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className={styles.bubbleLink}
               onClick={(e) => e.stopPropagation()}
             >

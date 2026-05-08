@@ -20,7 +20,8 @@ export const authOptions: NextAuthOptions = {
           }),
         ]
       : []),
-    CredentialsProvider({
+    ...(process.env.NEXT_PUBLIC_DISABLE_LOCAL_LOGIN === "true" ? [] : [
+      CredentialsProvider({
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -51,6 +52,7 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
+    ]),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {

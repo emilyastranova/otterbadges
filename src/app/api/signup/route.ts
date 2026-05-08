@@ -5,6 +5,10 @@ import { generateUniqueAlias } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
+    if (process.env.NEXT_PUBLIC_DISABLE_SIGNUP === "true" || process.env.NEXT_PUBLIC_DISABLE_LOCAL_LOGIN === "true") {
+      return Res.json({ error: "Signups are currently disabled." }, { status: 403 });
+    }
+
     const { email, password, name } = await req.json();
 
     if (!email || !password || !name) {

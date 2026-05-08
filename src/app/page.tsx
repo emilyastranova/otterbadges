@@ -20,7 +20,7 @@ export default async function Home() {
       {dbBadges.length > 0 && <BackgroundGrid initialBadges={dbBadges} />}
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to OtterBadges</h1>
+        <h1 className={styles.title}>Welcome to {process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges"}</h1>
         <p className={styles.description}>
           Create, distribute, and collect digital achievement badges across your team
         </p>

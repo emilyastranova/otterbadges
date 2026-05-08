@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     where: { OR: [{ slug }, { id: slug }] }
   });
   if (!badge) return { title: "Badge Not Found" };
-  return { title: `${badge.title} - OtterBadges`, description: badge.description };
+  return { title: `${badge.title} - ${process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges"}`, description: badge.description };
 }
 
 export default async function BadgePage({ params }: { params: Promise<{ slug: string }> }) {

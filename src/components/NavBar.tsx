@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export function NavBar() {
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges";
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -27,7 +28,7 @@ export function NavBar() {
         </IconButton>
         <Link href="/" className={styles.logo}>
           <Icon>military_tech</Icon>
-          <span>OtterBadges</span>
+          <span>{appName}</span>
         </Link>
       </div>
 
@@ -74,7 +75,7 @@ export function NavBar() {
         <div className={styles.drawer} onClick={(e) => e.stopPropagation()}>
           <div className={styles.drawerHeader}>
             <Icon>military_tech</Icon>
-            <span>OtterBadges</span>
+            <span>{appName}</span>
             <IconButton onClick={() => setIsMenuOpen(false)} style={{ marginLeft: "auto" }}>
               <Icon>close</Icon>
             </IconButton>

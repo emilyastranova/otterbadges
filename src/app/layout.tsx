@@ -12,7 +12,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "OtterBadges",
+  title: process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges",
   description: "A digital badge achievement system",
 };
 

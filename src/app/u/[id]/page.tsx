@@ -9,6 +9,38 @@ import AssignBadgeButton from "./AssignBadgeButton";
 import ProfileHeader from "./ProfileHeader";
 import BadgeGrid from "./BadgeGrid";
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const user = await prisma.user.findFirst({
+    where: { OR: [{ id }, { alias: id }] },
+    include: { _count: { select: { badges: true } } }
+  });
+  if (!user) return { title: "User Not Found" };
+
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges";
+  const title = `${user.name || "User"} - ${appName}`;
+  const description = user.bio
+    || `${user.name || "User"}'s profile on ${appName} — ${user._count.badges} badge${user._count.badges === 1 ? "" : "s"} collected`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+      siteName: appName,
+      ...(user.image ? { images: [{ url: user.image, alt: user.name || "User" }] } : {}),
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      ...(user.image ? { images: [user.image] } : {}),
+    },
+  };
+}
+
 export default async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   

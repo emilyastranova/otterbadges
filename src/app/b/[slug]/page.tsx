@@ -11,10 +11,33 @@ import LazyBadge from "@/components/LazyBadge";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const badge = await prisma.badge.findFirst({
-    where: { OR: [{ slug }, { id: slug }] }
+    where: { OR: [{ slug }, { id: slug }] },
+    include: { owner: { select: { name: true } } }
   });
   if (!badge) return { title: "Badge Not Found" };
-  return { title: `${badge.title} - ${process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges"}`, description: badge.description };
+
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || "OtterBadges";
+  const title = `${badge.title} - ${appName}`;
+  const description = badge.description || `A badge on ${appName}`;
+  const imageUrl = `/api/badges/${badge.id}/image`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: imageUrl, width: 256, height: 256, alt: badge.title }],
+      type: "article",
+      siteName: appName,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      images: [imageUrl],
+    },
+  };
 }
 
 export default async function BadgePage({ params }: { params: Promise<{ slug: string }> }) {

@@ -39,7 +39,7 @@ export default function RootLayout({
                 fontSize: "0.875rem",
                 marginTop: "auto"
               }}>
-                Created with love by Up-A-Creek Robotics - FRC Team 1619 &hearts;
+                Created with love by <a href="https://www.team1619.org" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline", color: "inherit" }}>Up-A-Creek Robotics</a>{" - "}FRC Team 1619 &hearts;
               </footer>
             </div>
           </ThemeProviders>

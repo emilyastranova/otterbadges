@@ -1,7 +1,7 @@
 import { NextResponse as Res } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { generateUniqueAlias } from "@/lib/utils";
+import { generateUniqueAlias, isFirstUser } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -22,12 +22,15 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const alias = await generateUniqueAlias(name);
+    const firstUser = await isFirstUser();
 
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name,
+        alias,
+        role: firstUser ? "ADMIN" : "USER",
         // Give them a random default theme color based on their name length
         themeColor: ["#03A9F4", "#B3261E", "#386A20", "#006874", "#825500"][name.length % 5],
       },

@@ -1,0 +1,15 @@
+services:
+  otterbadges:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - otterbadges-data:/app/data
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=file:/app/data/otterbadges.db
+    restart: unless-stopped
+
+volumes:
+  otterbadges-data:

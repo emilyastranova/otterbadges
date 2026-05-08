@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Build output
+.next
+
+# Database (will be created at runtime)
+*.db
+*.db-journal
+
+# Git
+.git
+.gitignore
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+build.log
+scratch/
+assets/

@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { generateUniqueAlias } from "./utils";
+import { generateUniqueAlias, isFirstUser } from "./utils";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -66,12 +66,13 @@ export const authOptions: NextAuthOptions = {
         
         if (!existingUser) {
           const newAlias = await generateUniqueAlias(user.name || "User");
+          const firstUser = await isFirstUser();
           await prisma.user.create({
             data: {
               email: user.email,
               name: user.name,
               image: user.image,
-              role: "USER",
+              role: firstUser ? "ADMIN" : "USER",
               alias: newAlias,
             }
           });

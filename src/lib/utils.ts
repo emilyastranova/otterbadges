@@ -34,3 +34,11 @@ export async function generateUniqueBadgeSlug(title: string): Promise<string> {
   }
 }
 
+/**
+ * Returns true if no users exist in the database yet.
+ * Used to auto-promote the very first user to ADMIN.
+ */
+export async function isFirstUser(): Promise<boolean> {
+  const count = await prisma.user.count();
+  return count === 0;
+}

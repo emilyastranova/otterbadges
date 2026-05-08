@@ -34,10 +34,9 @@ OtterBadges is a self-hosted badge platform built with Next.js and Material Desi
 
 ### Prerequisites
 
-- Node.js 20+
-- npm
+- Node.js 20+ and npm **— or —** Docker
 
-### Installation
+### Option A: Local Development
 
 ```bash
 # Clone the repository
@@ -56,6 +55,25 @@ npm run dev
 ```
 
 The app will be available at [http://localhost:3000](http://localhost:3000).
+
+### Option B: Docker Compose
+
+```bash
+# Clone the repository
+git clone https://github.com/emilyastranova/otterbadges.git
+cd otterbadges
+
+# Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your settings
+
+# Build and start
+docker compose up -d --build
+```
+
+The app will be available at [http://localhost:3000](http://localhost:3000).
+
+The SQLite database is persisted in a Docker named volume (`otterbadges-data`). To stop the application, run `docker compose down`. Your data will be preserved across restarts.
 
 ### Environment Variables
 
